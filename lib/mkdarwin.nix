@@ -1,5 +1,5 @@
 # This function creates a nix-darwin system.
-name: { darwin, nixpkgs, home-manager, system, user, overlays }:
+name: { darwin, nixpkgs, home-manager, system, user, overlays, additionalModules ? [] }:
 
 darwin.lib.darwinSystem rec {
   inherit system;
@@ -26,5 +26,5 @@ darwin.lib.darwinSystem rec {
         currentSystem = system;
       };
     }
-  ];
+  ] ++ additionalModules;
 }

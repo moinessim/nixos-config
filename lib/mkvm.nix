@@ -1,6 +1,6 @@
 # This function creates a NixOS system based on our VM setup for a
 # particular architecture.
-name: { nixpkgs, home-manager, system, user, overlays }:
+name: { nixpkgs, home-manager, system, user, overlays, additionalModules ? [] }:
 
 nixpkgs.lib.nixosSystem rec {
   inherit system;
@@ -28,5 +28,5 @@ nixpkgs.lib.nixosSystem rec {
         currentSystem = system;
       };
     }
-  ];
+  ] ++ additionalModules;
 }

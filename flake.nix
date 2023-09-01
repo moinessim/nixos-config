@@ -35,8 +35,11 @@
   };
 
   outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs: let
+
     mkDarwin = import ./lib/mkdarwin.nix;
     mkVM = import ./lib/mkvm.nix;
+
+    additionalModules = [ (import ./modules/registry.nix inputs) ];
 
     # Overlays is the list of overlays we want to apply from flake inputs.
     overlays = [
@@ -44,7 +47,7 @@
     ];
   in {
     nixosConfigurations.vm-aarch64 = mkVM "vm-aarch64" {
-      inherit nixpkgs home-manager;
+      inherit nixpkgs home-manager additionalModules;
       system = "aarch64-linux";
       user   = "moisesnessim";
 
@@ -55,25 +58,25 @@
     };
 
     nixosConfigurations.vm-aarch64-prl = mkVM "vm-aarch64-prl" rec {
-      inherit overlays nixpkgs home-manager;
+      inherit overlays nixpkgs home-manager additionalModules;
       system = "aarch64-linux";
       user   = "moisesnessim";
     };
 
     nixosConfigurations.vm-aarch64-utm = mkVM "vm-aarch64-utm" rec {
-      inherit overlays nixpkgs home-manager;
+      inherit overlays nixpkgs home-manager additionalModules;
       system = "aarch64-linux";
       user   = "moisesnessim";
     };
 
     nixosConfigurations.vm-intel = mkVM "vm-intel" rec {
-      inherit nixpkgs home-manager overlays;
+      inherit nixpkgs home-manager overlays additionalModules;
       system = "x86_64-linux";
       user   = "moisesnessim";
     };
 
     darwinConfigurations.macbook-pro-m1 = mkDarwin "macbook-pro-m1" {
-      inherit darwin nixpkgs home-manager overlays;
+      inherit darwin nixpkgs home-manager overlays additionalModules;
       system = "aarch64-darwin";
       user   = "moisesnessim";
     };
