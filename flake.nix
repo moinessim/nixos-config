@@ -54,6 +54,11 @@
       overlays = overlays ++ [(final: prev: {
         # Example of bringing in an unstable package:
         # open-vm-tools = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.open-vm-tools;
+
+        fsautocomplete =
+            inputs.nixpkgs-unstable.legacyPackages.${prev.system}
+            .callPackage ./pkgs/fsautocomplete.nix {};
+
       })];
     };
 

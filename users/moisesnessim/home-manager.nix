@@ -289,7 +289,7 @@ in {
       vimPlugins.typescript-vim
     ];
 
-    extraConfig = (import ./vim-config.nix) { inherit sources; };
+    extraConfig = (import ./vim-config.nix) { inherit sources pkgs; };
   };
 
   services.gpg-agent = {
