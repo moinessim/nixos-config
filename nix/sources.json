@@ -227,6 +227,18 @@
         "url": "https://github.com/mitchellh/tree-sitter-proto/archive/42d82fa18f8afe59b5fc0b16c207ee4f84cb185f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "vifm.vim": {
+        "branch": "master",
+        "description": "Vim plugin that allows use of vifm as a file picker",
+        "homepage": "",
+        "owner": "vifm",
+        "repo": "vifm.vim",
+        "rev": "8b671c02525b6772ba9a8a38d17d0f06bfcb06bd",
+        "sha256": "1v7gav6nzlzsv9jwyqbwbw73cch9m5ccq47nkrgmk702nyv7sq7s",
+        "type": "tarball",
+        "url": "https://github.com/vifm/vifm.vim/archive/8b671c02525b6772ba9a8a38d17d0f06bfcb06bd.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "vim-copilot": {
         "branch": "release",
         "description": "Neovim plugin for GitHub Copilot",
@@ -381,6 +393,18 @@
         "sha256": "052jmw1pzqydg4icsq2s7vn66wyn2ki4lzpln2fzxx9r9hbwfi8m",
         "type": "tarball",
         "url": "https://github.com/ziglang/zig.vim/archive/0c4f965468259ab6e47fd7c6b2127583a8860eb1.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "which-key.nvim": {
+        "branch": "main",
+        "description": "💥   Create key bindings that stick. WhichKey is a lua plugin for Neovim 0.5 that displays a popup with possible keybindings of the command you started typing.",
+        "homepage": "",
+        "owner": "folke",
+        "repo": "which-key.nvim",
+        "rev": "7ccf476ebe0445a741b64e36c78a682c1c6118b7",
+        "sha256": "173gxysxw68xnfmkx468cz4g5lw5vz9sg8lj1wdz27wyvlfq8pq7",
+        "type": "tarball",
+        "url": "https://github.com/folke/which-key.nvim/archive/7ccf476ebe0445a741b64e36c78a682c1c6118b7.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

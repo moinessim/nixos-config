@@ -23,13 +23,6 @@ if filereadable(vim_misc_path)
 endif
 
 let mapleader = " "
-nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
-
-" Clear highlighted search
-nnoremap <C-N> :nohlsearch<CR>
-nnoremap <leader>s :SplitVifm<CR>
-nnoremap <leader>v :VsplitVifm<CR>
-nnoremap <leader>d :DiffVifm<CR>
 
 lua <<EOF
 ---------------------------------------------------------------------
@@ -41,6 +34,17 @@ vim.o.relativenumber = true
 
 -- Yanks go on clipboard
 vim.opt.clipboard = 'unnamedplus'
+
+-- Cd into directory of current buffer
+vim.keymap.set('n', '<leader>cd','%:p:h<CR>:pwd<CR>', {} )
+
+-- Clear highlighted search
+vim.keymap.set('n', '<C-N>', ':nohlsearch<CR>', {} )
+
+-- vifm plugin keybindings
+vim.keymap.set('n', '<leader>s', ':SplitVifm<CR>', {} )
+vim.keymap.set('n', '<leader>v', ':VsplitVifm<CR>', {} )
+vim.keymap.set('n', '<leader>d', ':DiffVifm<CR>', {} )
 
 ---------------------------------------------------------------------
 -- Add our custom treesitter parsers
@@ -154,7 +158,12 @@ vim.keymap.del('t', 'jk')
 vim.keymap.del('t', 'jJ')
 vim.keymap.del('t', 'jj')
 
+-- Escape from terminal into buffer
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-N>', {})
+
+-- Split terminal
+vim.keymap.set('n', '<leader>t', ':sp | :term<CR>', {})
+
 
 -- Configure keybindings for Telescope
 

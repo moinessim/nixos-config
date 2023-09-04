@@ -3,6 +3,17 @@ self: super:
 let sources = import ../../nix/sources.nix; in rec {
   # My vim config
   customVim = with self; {
+
+    vifm-vim = vimUtils.buildVimPlugin {
+      name = "vifm.vim";
+      src = sources."vifm.vim";
+    };
+
+    which-key-nvim = vimUtils.buildVimPlugin {
+      name = "which-key.nvim";
+      src = sources."which-key.nvim";
+    };
+
     vim-copilot = vimUtils.buildVimPlugin {
       name = "vim-copilot";
       src = sources.vim-copilot;

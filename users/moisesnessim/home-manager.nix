@@ -259,6 +259,7 @@ in {
     ]);
 
     plugins = with pkgs; [
+      customVim.which-key-nvim
       customVim.vim-copilot
       customVim.vim-cue
       customVim.vim-fish
@@ -280,6 +281,7 @@ in {
       customVim.nvim-treesitter-playground
       customVim.nvim-treesitter-textobjects
       customVim.nvim-magma
+      customVim.vifm-vim
 
       vimPlugins.vim-airline
       vimPlugins.vim-airline-themes
