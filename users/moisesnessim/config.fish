@@ -77,7 +77,7 @@ end
 # Do not show any greeting
 set --universal --erase fish_greeting
 function fish_greeting; end
-funcsave fish_greeting
+funcsave fish_greeting > /dev/null
 
 # bobthefish theme
 set -g theme_color_scheme dracula
