@@ -98,6 +98,8 @@ in {
     initExtra = builtins.readFile ./bashrc;
 
     shellAliases = {
+      gv = "nvim -c ':G | :only' .";
+      gf = "git fetch";
       ga = "git add";
       gc = "git commit";
       gco = "git checkout";
@@ -134,6 +136,8 @@ in {
     ]));
 
     shellAliases = {
+      gv = "nvim -c ':G | :only' .";
+      gf = "git fetch";
       ga = "git add";
       gc = "git commit";
       gco = "git checkout";
