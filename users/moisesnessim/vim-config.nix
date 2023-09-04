@@ -22,7 +22,26 @@ if filereadable(vim_misc_path)
   execute "source " . vim_misc_path
 endif
 
+let mapleader = " "
+nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
+
+" Clear highlighted search
+nnoremap <C-N> :nohlsearch<CR>
+nnoremap <leader>s :SplitVifm<CR>
+nnoremap <leader>v :VsplitVifm<CR>
+nnoremap <leader>d :DiffVifm<CR>
+
 lua <<EOF
+---------------------------------------------------------------------
+
+-- Set leader key
+vim.g.mapleader = ' '
+vim.o.number = true
+vim.o.relativenumber = true
+
+-- Yanks go on clipboard
+vim.opt.clipboard = 'unnamedplus'
+
 ---------------------------------------------------------------------
 -- Add our custom treesitter parsers
 local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
@@ -76,9 +95,10 @@ require'nvim-treesitter.configs'.setup {
 
 ---------------------------------------------------------------------
 -- Configure F# LSP
-local fsconfig = {}
-fsconfig["cmd"] = {"${pkgs.fsautocomplete}/bin/fsautocomplete"}
-require'lspconfig'.fsharp_language_server.setup(fsconfig);
+require'lspconfig'.fsautocomplete.setup {
+    cmd = { "${pkgs.fsautocomplete}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" }
+}
+
 
 
 -- Configure Keybindings for LSP
@@ -120,6 +140,37 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, opts)
   end,
 })
+
+
+-- Configure keybindings for terminal
+
+vim.keymap.del('t', '<Esc>')
+vim.keymap.del('t', 'JK')
+vim.keymap.del('t', 'Jk')
+vim.keymap.del('t', 'JJ')
+vim.keymap.del('t', 'Jj')
+vim.keymap.del('t', 'jK')
+vim.keymap.del('t', 'jk')
+vim.keymap.del('t', 'jJ')
+vim.keymap.del('t', 'jj')
+
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-N>', {})
+
+-- Configure keybindings for Telescope
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+
+-- Git keybindings
+
+vim.keymap.set('n', '<leader>gs', ':G<CR>', {})
+vim.keymap.set('n', '<leader>gp', ':G push<CR>', {})
+vim.keymap.set('n', '<leader>gpF', ':G push --force<CR>', {})
+vim.keymap.set('n', '<leader>gf', ':G fetch<CR>', {})
+vim.keymap.set('n', '<leader>gP', ':G pull<CR>', {})
 
 
 EOF
