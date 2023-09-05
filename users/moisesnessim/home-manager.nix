@@ -49,7 +49,6 @@ in {
   ]) ++ (lib.optionals isLinux [
     pkgs.chromium
     pkgs.firefox
-    pkgs.qutebrowser
     pkgs.rofi
     pkgs.zathura
   ]);
@@ -299,6 +298,13 @@ in {
     ];
 
     extraConfig = (import ./vim-config.nix) { inherit sources pkgs; };
+  };
+
+  programs.qutebrowser = {
+      enable = true;
+      extraConfig = ''
+        config.set("colors.webpage.darkmode.enabled", True)
+      '';
   };
 
   services.gpg-agent = {
