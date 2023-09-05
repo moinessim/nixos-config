@@ -49,6 +49,7 @@ in {
   ]) ++ (lib.optionals isLinux [
     pkgs.chromium
     pkgs.firefox
+    pkgs.qutebrowser
     pkgs.rofi
     pkgs.zathura
   ]);
