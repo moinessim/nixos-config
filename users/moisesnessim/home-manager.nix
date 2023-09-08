@@ -304,6 +304,7 @@ in {
       enable = true;
       extraConfig = ''
         config.set("colors.webpage.darkmode.enabled", True)
+        config.set("zoom.default", "200%")
       '';
   };
 
