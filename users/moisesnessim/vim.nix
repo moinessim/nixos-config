@@ -4,6 +4,11 @@ let sources = import ../../nix/sources.nix; in rec {
   # My vim config
   customVim = with self; {
 
+    toggleterm = vimUtils.buildVimPlugin {
+      name = "toggleterm.nvim";
+      src = sources."toggleterm.nvim";
+    };
+
     vifm-vim = vimUtils.buildVimPlugin {
       name = "vifm.vim";
       src = sources."vifm.vim";

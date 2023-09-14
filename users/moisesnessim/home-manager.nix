@@ -286,6 +286,7 @@ in {
       customVim.nvim-treesitter-textobjects
       customVim.nvim-magma
       customVim.vifm-vim
+      customVim.toggleterm
 
       vimPlugins.vim-airline
       vimPlugins.vim-airline-themes

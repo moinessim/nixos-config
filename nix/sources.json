@@ -203,6 +203,18 @@
         "url": "https://github.com/tmux-plugins/tmux-pain-control/archive/2db63de3b08fc64831d833240749133cecb67d92.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "toggleterm.nvim": {
+        "branch": "main",
+        "description": "A neovim lua plugin to help easily manage multiple terminal windows",
+        "homepage": "",
+        "owner": "akinsho",
+        "repo": "toggleterm.nvim",
+        "rev": "0427b908ebefcb3701c7f2cfbdafa37d11afe71a",
+        "sha256": "1wxrwl530kxm8k8ymgk3w77av770ndr1hhzfk315jgl2p5hqmqm0",
+        "type": "tarball",
+        "url": "https://github.com/akinsho/toggleterm.nvim/archive/0427b908ebefcb3701c7f2cfbdafa37d11afe71a.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "tree-sitter-hcl": {
         "branch": "main",
         "description": "A tree-sitter grammar for HCL (HashiCorp Configuration Language), used by projects such as Terraform.",

@@ -164,6 +164,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-N>', {})
 -- Split terminal
 vim.keymap.set('n', '<leader>t', ':sp | :term<CR>', {})
 
+require("toggleterm").setup{open_mapping = [[<space>']]}
 
 -- Configure keybindings for Telescope
 
