@@ -306,6 +306,7 @@ in {
       extraConfig = ''
         config.set("colors.webpage.darkmode.enabled", True)
         config.set("zoom.default", "200%")
+        config.set("editor.command", ["kitty", "nvim", "{file}", "-c", "normal {line}G{column0}l"])
       '';
   };
 
