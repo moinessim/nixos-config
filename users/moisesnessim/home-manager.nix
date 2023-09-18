@@ -319,6 +319,8 @@ in {
     maxCacheTtl = 31536000;
   };
 
+  services.picom.enable = true;
+
   xresources.extraConfig = builtins.readFile ./Xresources;
 
   # Make cursor not tiny on HiDPI screens
