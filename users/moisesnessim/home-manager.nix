@@ -294,6 +294,7 @@ in {
       vimPlugins.vim-gitgutter
 
       vimPlugins.vim-markdown
+      vimPlugins.markdown-preview-nvim
       vimPlugins.vim-nix
       vimPlugins.typescript-vim
     ];
