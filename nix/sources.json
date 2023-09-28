@@ -339,12 +339,12 @@
         "branch": "master",
         "description": "My Vim configuration files.",
         "homepage": null,
-        "owner": "mitchellh",
+        "owner": "moinessim",
         "repo": "vim-misc",
-        "rev": "ca7946cbecc2d63a7c83ad0a894d8c2653fd1963",
-        "sha256": "0bq3i36dnrl3c3xx09ny7mrdz30sp5c9yiaqi2f68sy0vj6qlga4",
+        "rev": "70675d27cb77f83f9757412b5a7dad4053df633e",
+        "sha256": "01hc6dk49i0xfz374km14bq4dlykya3c4q7vs3363w415fmggmnx",
         "type": "tarball",
-        "url": "https://github.com/mitchellh/vim-misc/archive/ca7946cbecc2d63a7c83ad0a894d8c2653fd1963.tar.gz",
+        "url": "https://github.com/moinessim/vim-misc/archive/70675d27cb77f83f9757412b5a7dad4053df633e.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vim-nord": {
