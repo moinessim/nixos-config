@@ -81,5 +81,10 @@ require'lspconfig'.fsautocomplete.setup {
     cmd = { "${pkgs.fsautocomplete}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" }
 }
 
+-- Configure Nix LSP
+require'lspconfig'.nixd.setup{
+    cmd = { "${pkgs.nixd}/bin/nixd" }
+}
+
 EOF
 ''

@@ -31,7 +31,6 @@
       url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
   };
 
   outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs: let
@@ -58,6 +57,7 @@
         fsautocomplete =
             inputs.nixpkgs-unstable.legacyPackages.${prev.system}
             .callPackage ./pkgs/fsautocomplete.nix {};
+        nixd = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.nixd;
 
       })];
     };
