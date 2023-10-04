@@ -95,13 +95,15 @@ in {
   };
 
   programs.rofi = {
-      enable = true;
+      enable = isLinux;
       theme = "gruvbox-dark";
       font = "Monaco for Powerline 12";
       extraConfig = {
           dpi = 200;
       };
   };
+
+  programs.rofi.pass.enable = true;
 
   programs.bash = {
     enable = true;
