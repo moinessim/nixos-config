@@ -49,7 +49,6 @@ in {
   ]) ++ (lib.optionals isLinux [
     pkgs.chromium
     pkgs.firefox
-    pkgs.rofi
     pkgs.zathura
   ]);
 
@@ -70,7 +69,6 @@ in {
   home.file.".inputrc".source = ./inputrc;
 
   xdg.configFile."i3/config".text = builtins.readFile ./i3;
-  xdg.configFile."rofi/config.rasi".text = builtins.readFile ./rofi;
   xdg.configFile."devtty/config".text = builtins.readFile ./devtty;
 
   # Rectangle.app. This has to be imported manually using the app.
@@ -94,6 +92,15 @@ in {
   programs.password-store = {
       enable = true;
       package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
+  };
+
+  programs.rofi = {
+      enable = true;
+      theme = "gruvbox-dark";
+      font = "Monaco for Powerline 12";
+      extraConfig = {
+          dpi = 200;
+      };
   };
 
   programs.bash = {
@@ -251,7 +258,7 @@ in {
     };
   };
 
-  programs.pywal.enable = true;
+  # programs.pywal.enable = true;
 
   programs.neovim = {
     enable = true;
