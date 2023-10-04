@@ -91,6 +91,11 @@ in {
 
   programs.gpg.enable = !isDarwin;
 
+  programs.password-store = {
+      enable = true;
+      package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
+  };
+
   programs.bash = {
     enable = true;
     shellOptions = [];
