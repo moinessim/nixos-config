@@ -37,8 +37,7 @@ in {
     pkgs.tree
     pkgs.watch
     pkgs.vifm-full
-
-    pkgs.gopls
+    pkgs.qtpass
 
     # Node is required for Copilot.vim
     pkgs.nodejs
