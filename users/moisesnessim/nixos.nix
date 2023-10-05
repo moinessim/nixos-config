@@ -10,7 +10,7 @@
   users.users.moisesnessim = {
     isNormalUser = true;
     home = "/home/moisesnessim";
-    extraGroups = [ "docker" "wheel" ];
+    extraGroups = [ "docker" "wheel" "audio" ];
     shell = pkgs.fish;
       hashedPassword = "$y$j9T$TI6TlM/lCf7qQxK0IOuV00$ZX7F24S6jhxGbku4gAvbbOvx2CN7Vt2hW0Wdm0GZu9C";
       openssh.authorizedKeys.keys = [

@@ -13,6 +13,7 @@ nixpkgs.lib.nixosSystem rec {
 
     ../hardware/${name}.nix
     ../machines/${name}.nix
+    ../modules/audio.nix
     ../users/${user}/nixos.nix
     home-manager.nixosModules.home-manager {
       home-manager.useGlobalPkgs = true;
