@@ -333,7 +333,7 @@ in {
     maxCacheTtl = 31536000;
   };
 
-  services.picom.enable = true;
+  services.picom.enable = isLinux;
 
   services.safeeyes.enable = isLinux;
 
