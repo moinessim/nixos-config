@@ -335,6 +335,8 @@ in {
 
   services.picom.enable = true;
 
+  services.safeeyes.enable = isLinux;
+
   xresources.extraConfig = builtins.readFile ./Xresources;
 
   # Make cursor not tiny on HiDPI screens
