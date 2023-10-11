@@ -91,6 +91,11 @@ require'lspconfig'.java_language_server.setup{
     cmd = { "${pkgs.java-language-server}/bin/java-language-server" }
 }
 
+-- Configure Yaml LSP
+require('lspconfig').yamlls.setup {
+    cmd = { "${pkgs.yaml-language-server}/bin/yaml-language-server", "--stdio" },
+    settings = { yaml = { keyOrdering = false } }
+}
 
 EOF
 ''
