@@ -86,5 +86,11 @@ require'lspconfig'.nixd.setup{
     cmd = { "${pkgs.nixd}/bin/nixd" }
 }
 
+-- Configure Java LSP
+require'lspconfig'.java_language_server.setup{
+    cmd = { "${pkgs.java-language-server}/bin/java-language-server" }
+}
+
+
 EOF
 ''
