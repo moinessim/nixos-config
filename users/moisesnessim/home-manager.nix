@@ -300,6 +300,7 @@ in {
       customVim.vifm-vim
       customVim.toggleterm
       customVim.comment-nvim
+      vimPlugins.nvim-surround
 
       vimPlugins.vim-airline
       vimPlugins.vim-airline-themes

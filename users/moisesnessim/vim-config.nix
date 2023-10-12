@@ -76,6 +76,8 @@ require'nvim-treesitter.configs'.setup {
 
 ---------------------------------------------------------------------
 
+require'nvim-surround'.setup()
+
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- Configure F# LSP
