@@ -95,6 +95,11 @@ let sources = import ../../nix/sources.nix; in rec {
       buildPhase = ":";
     };
 
+    comment-nvim = vimUtils.buildVimPlugin {
+      name = "Comment.nvim";
+      src = sources."Comment.nvim";
+    };
+
     nvim-magma = vimUtils.buildVimPlugin {
       name = "nvim-magma";
       src = sources.nvim-magma;

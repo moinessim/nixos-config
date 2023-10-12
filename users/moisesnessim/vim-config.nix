@@ -76,6 +76,8 @@ require'nvim-treesitter.configs'.setup {
 
 ---------------------------------------------------------------------
 
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
 -- Configure F# LSP
 require'lspconfig'.fsautocomplete.setup {
     cmd = { "${pkgs.fsautocomplete}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" }
@@ -83,18 +85,54 @@ require'lspconfig'.fsautocomplete.setup {
 
 -- Configure Nix LSP
 require'lspconfig'.nixd.setup{
-    cmd = { "${pkgs.nixd}/bin/nixd" }
+    cmd = { "${pkgs.nixd}/bin/nixd" },
+    capabilities = capabilities,
 }
 
 -- Configure Java LSP
 require'lspconfig'.java_language_server.setup{
-    cmd = { "${pkgs.java-language-server}/bin/java-language-server" }
+    cmd = { "${pkgs.java-language-server}/bin/java-language-server" },
+    capabilities = capabilities,
 }
 
 -- Configure Yaml LSP
 require('lspconfig').yamlls.setup {
     cmd = { "${pkgs.yaml-language-server}/bin/yaml-language-server", "--stdio" },
-    settings = { yaml = { keyOrdering = false } }
+    settings = { yaml = { keyOrdering = false } },
+    capabilities = capabilities,
+}
+
+-- Configure Lua LSP
+require'lspconfig'.lua_ls.setup {
+  cmd = { "${pkgs.lua-language-server}/bin/lua-language-server" },
+  on_init = function(client)
+    local path = client.workspace_folders[1].name
+    if not vim.loop.fs_stat(path..'/.luarc.json') and not vim.loop.fs_stat(path..'/.luarc.jsonc') then
+      client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
+        Lua = {
+          runtime = {
+            -- Tell the language server which version of Lua you're using
+            -- (most likely LuaJIT in the case of Neovim)
+            version = 'LuaJIT'
+          },
+          -- Make the server aware of Neovim runtime files
+          workspace = {
+            checkThirdParty = false,
+         -- library = {
+         --   vim.env.VIMRUNTIME
+              -- "''${3rd}/luv/library"
+              -- "''${3rd}/busted/library",
+         -- }
+            -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+            library = vim.api.nvim_get_runtime_file("", true)
+          }
+        }
+      })
+
+      client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+    end
+    return true
+  end
 }
 
 EOF

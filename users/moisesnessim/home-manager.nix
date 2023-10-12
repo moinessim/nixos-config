@@ -290,7 +290,6 @@ in {
 
       customVim.vim-devicons
       customVim.vim-nord
-      customVim.nvim-comment
       customVim.nvim-lspconfig
       customVim.nvim-plenary # required for telescope
       customVim.nvim-telescope
@@ -300,11 +299,19 @@ in {
       customVim.nvim-magma
       customVim.vifm-vim
       customVim.toggleterm
+      customVim.comment-nvim
 
       vimPlugins.vim-airline
       vimPlugins.vim-airline-themes
       vimPlugins.vim-eunuch
       vimPlugins.vim-gitgutter
+
+      vimPlugins.cmp-nvim-lsp
+      vimPlugins.cmp-buffer
+      vimPlugins.cmp-path
+      vimPlugins.cmp-cmdline
+      vimPlugins.nvim-cmp
+      vimPlugins.lspkind-nvim
 
       vimPlugins.vim-markdown
       vimPlugins.markdown-preview-nvim

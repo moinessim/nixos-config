@@ -1,4 +1,16 @@
 {
+    "Comment.nvim": {
+        "branch": "master",
+        "description": ":brain: :muscle: // Smart and powerful comment plugin for neovim. Supports treesitter, dot repeat, left-right/up-down motions, hooks, and more",
+        "homepage": "",
+        "owner": "numToStr",
+        "repo": "Comment.nvim",
+        "rev": "0236521ea582747b58869cb72f70ccfa967d2e89",
+        "sha256": "1mvi7c6n9ybgs6lfylzhkidifa6jkgsbj808knx57blvi5k7blgr",
+        "type": "tarball",
+        "url": "https://github.com/numToStr/Comment.nvim/archive/0236521ea582747b58869cb72f70ccfa967d2e89.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "fish-foreign-env": {
         "branch": "master",
         "description": "Run foreign bash scripts and capture exported environment variables",
@@ -341,10 +353,10 @@
         "homepage": null,
         "owner": "moinessim",
         "repo": "vim-misc",
-        "rev": "70675d27cb77f83f9757412b5a7dad4053df633e",
-        "sha256": "01hc6dk49i0xfz374km14bq4dlykya3c4q7vs3363w415fmggmnx",
+        "rev": "82769157fda94dca969eb2a100205b945c9570b5",
+        "sha256": "0v6vmn26viin29rl4f40c4aj120cxifw5lykw0dl270dj5nwygpm",
         "type": "tarball",
-        "url": "https://github.com/moinessim/vim-misc/archive/70675d27cb77f83f9757412b5a7dad4053df633e.tar.gz",
+        "url": "https://github.com/moinessim/vim-misc/archive/82769157fda94dca969eb2a100205b945c9570b5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vim-nord": {
