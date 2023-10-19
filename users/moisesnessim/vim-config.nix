@@ -82,7 +82,9 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- Configure F# LSP
 require'lspconfig'.fsautocomplete.setup {
-    cmd = { "${pkgs.fsautocomplete}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" }
+    cmd = { "${pkgs.fsautocomplete}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" },
+    capabilities = capabilities,
+}
 
 -- Configure C# LSP
 local pid = vim.fn.getpid()
