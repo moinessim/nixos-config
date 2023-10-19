@@ -83,7 +83,19 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 -- Configure F# LSP
 require'lspconfig'.fsautocomplete.setup {
     cmd = { "${pkgs.fsautocomplete}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" }
+
+-- Configure C# LSP
+local pid = vim.fn.getpid()
+require'lspconfig'.omnisharp.setup{
+    cmd = { '${pkgs.omnisharp-roslyn}/bin/OmniSharp', "--languageserver" , "--hostPID", tostring(pid) },
+    capabilities = capabilities,
+    -- disable semantic tokens provider
+    on_attach = function(client, bufnr)
+        client.server_capabilities.semanticTokensProvider = nil
+        require'omnisharp'.on_attach(client, bufnr)
+    end,
 }
+
 
 -- Configure Nix LSP
 require'lspconfig'.nixd.setup{
