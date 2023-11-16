@@ -101,7 +101,10 @@ in {
 
   programs.password-store = {
       enable = true;
-      package = pkgs.pass.withExtensions (exts: [ exts.pass-otp ]);
+      package = pkgs.pass.withExtensions (exts: [
+          exts.pass-otp
+          exts.pass-import
+      ]);
   };
 
   programs.rofi = {
