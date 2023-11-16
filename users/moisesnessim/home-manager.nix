@@ -346,10 +346,10 @@ in {
         config.set("zoom.default", "200%")
         config.set("editor.command", ["kitty", "nvim", "{file}", "-c", "normal {line}G{column0}l"])
 
-        config.bind('<z><l>', 'spawn --userscript qute-pass')
-        config.bind('<z><u><l>', 'spawn --userscript qute-pass --username-only')
-        config.bind('<z><p><l>', 'spawn --userscript qute-pass --password-only')
-        config.bind('<z><o><l>', 'spawn --userscript qute-pass --otp-only')
+        config.bind('<z><l>', 'spawn --userscript qute-pass -U secret -u "user: (.+)"')
+        config.bind('<z><u><l>', 'spawn --userscript qute-pass -U secret -u "user: (.+)" --username-only')
+        config.bind('<z><p><l>', 'spawn --userscript qute-pass -U secret -u "user: (.+)" --password-only')
+        config.bind('<z><o><l>', 'spawn --userscript qute-pass -U secret -u "user: (.+)" --otp-only')
       '';
   };
 
