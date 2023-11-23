@@ -12,6 +12,18 @@ let
     '' else ''
     cat "$1" | col -bx | bat --language man --style plain
   ''));
+
+  jira-cli = pkgs.symlinkJoin {
+    name = "jira-cli";
+    paths = [
+      pkgs.jira-cli-go
+    ];
+    buildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/jira --run 'export JIRA_API_TOKEN="$(pass TopManage/jira-cli)"'
+      '';
+  };
+
 in {
   # Home-manager 22.11 requires this be set. We never set it so we have
   # to use the old state version.
@@ -38,6 +50,8 @@ in {
     pkgs.watch
     pkgs.vifm-full
     pkgs.qtpass
+
+    jira-cli
 
     # Node is required for Copilot.vim
     pkgs.nodejs
