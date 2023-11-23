@@ -44,6 +44,7 @@ in {
     pkgs.fd
     pkgs.fzf
     pkgs.htop
+    pkgs.btop
     pkgs.jq
     pkgs.ripgrep
     pkgs.tree
