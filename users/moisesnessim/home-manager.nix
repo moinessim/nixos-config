@@ -385,6 +385,10 @@ in {
 
   services.safeeyes.enable = isLinux;
 
+  services.copyq = {
+    enable = isLinux;
+  };
+
   xresources.extraConfig = builtins.readFile ./Xresources;
 
   # Make cursor not tiny on HiDPI screens
