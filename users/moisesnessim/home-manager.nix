@@ -344,6 +344,7 @@ in {
       vimPlugins.lspkind-nvim
 
       vimPlugins.nvim-dap
+      vimPlugins.nvim-dap-ui
 
       vimPlugins.trouble-nvim
       vimPlugins.nvim-web-devicons # required for trouble-nvim
