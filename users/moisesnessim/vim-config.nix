@@ -80,15 +80,30 @@ require'nvim-surround'.setup()
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
+local lspconfig = require'lspconfig'
+
 -- Configure F# LSP
-require'lspconfig'.fsautocomplete.setup {
+lspconfig.fsautocomplete.setup {
     cmd = { "${pkgs.fsautocomplete}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" },
     capabilities = capabilities,
+    root_dir = function(filename, _)
+        local root
+        -- in order of preference:
+        -- * git repository root
+        -- * directory containing a solution file
+        -- * directory containing an fsproj file
+        -- * directory with fsx scripts
+        root = lspconfig.util.find_git_ancestor(filename)
+        root = root or lspconfig.util.root_pattern("*.sln")(filename)
+        root = root or lspconfig.util.root_pattern("*.fsproj")(filename)
+        root = root or lspconfig.util.root_pattern("*.fsx")(filename)
+        return root
+      end,
 }
 
 -- Configure C# LSP
 local pid = vim.fn.getpid()
-require'lspconfig'.omnisharp.setup{
+lspconfig.omnisharp.setup{
     cmd = { '${pkgs.omnisharp-roslyn}/bin/OmniSharp', "--languageserver" , "--hostPID", tostring(pid) },
     capabilities = capabilities,
     -- disable semantic tokens provider
@@ -100,26 +115,26 @@ require'lspconfig'.omnisharp.setup{
 
 
 -- Configure Nix LSP
-require'lspconfig'.nixd.setup{
+lspconfig.nixd.setup{
     cmd = { "${pkgs.nixd}/bin/nixd" },
     capabilities = capabilities,
 }
 
 -- Configure Java LSP
-require'lspconfig'.java_language_server.setup{
+lspconfig.java_language_server.setup{
     cmd = { "${pkgs.java-language-server}/bin/java-language-server" },
     capabilities = capabilities,
 }
 
 -- Configure Yaml LSP
-require('lspconfig').yamlls.setup {
+lspconfig.yamlls.setup {
     cmd = { "${pkgs.yaml-language-server}/bin/yaml-language-server", "--stdio" },
     settings = { yaml = { keyOrdering = false } },
     capabilities = capabilities,
 }
 
 -- Configure Lua LSP
-require'lspconfig'.lua_ls.setup {
+lspconfig.lua_ls.setup {
   cmd = { "${pkgs.lua-language-server}/bin/lua-language-server" },
   on_init = function(client)
     local path = client.workspace_folders[1].name
