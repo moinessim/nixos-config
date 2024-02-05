@@ -180,6 +180,8 @@ mode "$mode_resize" {
 
 bindsym $mod+r mode "$mode_resize"
 
+bindsym $mod+Shift+x exec --no-startup-id xrandr-auto
+
 #----------------------------------------------------------------------
 # System Mode
 #----------------------------------------------------------------------
