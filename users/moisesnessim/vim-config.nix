@@ -166,6 +166,8 @@ lspconfig.lua_ls.setup {
   end
 }
 
+-- Configure Rust LSP
+lspconfig.rust_analyzer.setup {}
 
 -- Debugging
 
