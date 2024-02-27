@@ -89,12 +89,12 @@ lspconfig.fsautocomplete.setup {
     root_dir = function(filename, _)
         local root
         -- in order of preference:
-        -- * git repository root
         -- * directory containing a solution file
+        -- * git repository root
         -- * directory containing an fsproj file
         -- * directory with fsx scripts
-        root = lspconfig.util.find_git_ancestor(filename)
-        root = root or lspconfig.util.root_pattern("*.sln")(filename)
+        root = lspconfig.util.root_pattern("*.sln")(filename)
+        root = root or lspconfig.util.find_git_ancestor(filename)
         root = root or lspconfig.util.root_pattern("*.fsproj")(filename)
         root = root or lspconfig.util.root_pattern("*.fsx")(filename)
         return root
