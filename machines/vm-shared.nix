@@ -59,6 +59,7 @@
   services.xserver = {
     enable = true;
     layout = "us";
+    xkbVariant = "altgr-intl";
     dpi = 180;
 
     desktopManager = {
