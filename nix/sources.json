@@ -269,10 +269,10 @@
         "homepage": null,
         "owner": "github",
         "repo": "copilot.vim",
-        "rev": "1358e8e45ecedc53daf971924a0541ddf6224faf",
-        "sha256": "171ypwb85ya8n63zykdnb8d4ni2jbn728x7r6ph1m67k06g0w4pb",
+        "rev": "69455be5d4a892206bc08365ba3648a597485943",
+        "sha256": "0vcdfssw5nvdyxjq9d9vvdvvlwfr35cmrgrjc7ndbdxw778hsai0",
         "type": "tarball",
-        "url": "https://github.com/github/copilot.vim/archive/1358e8e45ecedc53daf971924a0541ddf6224faf.tar.gz",
+        "url": "https://github.com/github/copilot.vim/archive/69455be5d4a892206bc08365ba3648a597485943.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vim-cue": {
