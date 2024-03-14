@@ -36,9 +36,9 @@
   };
 
   # Workaround for programs not managed by Nix not being able to find glibc
-  # For example, nuget package for protoc
-  # systemd.tmpfiles.rules = [
-  #   "L+ /lib/ld-linux-aarch64.so.1 - - - - ${pkgs.glibc}/lib/ld-linux-aarch64.so.1"
-  # ];
+  programs.nix-ld.enable = true;
+  programs.nix-ld.libraries = with pkgs; [
+    pkgs.glibc
+  ];
 
 }
