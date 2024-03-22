@@ -84,7 +84,7 @@ local lspconfig = require'lspconfig'
 
 -- Configure F# LSP
 lspconfig.fsautocomplete.setup {
-    cmd = { "${pkgs.fsautocomplete}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" },
+    cmd = { "${pkgs.fsautocomplete-local-or-nix}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" },
     capabilities = capabilities,
     root_dir = function(filename, _)
         local root
