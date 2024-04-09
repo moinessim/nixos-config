@@ -364,7 +364,7 @@ in {
       extraConfig =
         let args = ''-U secret -u "(?:user|login|username): (.+)"''; in ''
         config.set("colors.webpage.darkmode.enabled", True)
-        config.set("zoom.default", "200%")
+        config.set("zoom.default", "100%")
         config.set("editor.command", ["kitty", "nvim", "{file}", "-c", "normal {line}G{column0}l"])
 
         config.bind('<z><l>', 'spawn --userscript qute-pass ${args}')
