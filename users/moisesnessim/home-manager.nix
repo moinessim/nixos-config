@@ -354,6 +354,7 @@ in {
       vimPlugins.markdown-preview-nvim
       vimPlugins.vim-nix
       vimPlugins.typescript-vim
+      vimPlugins.plantuml-syntax
     ];
 
     extraConfig = (import ./vim-config.nix) { inherit sources pkgs; };
