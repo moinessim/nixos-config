@@ -51,6 +51,12 @@
 
   # Virtualization settings
   virtualisation.docker.enable = true;
+  virtualisation.docker.daemon.settings = {
+    # https://serverfault.com/questions/916941/configuring-docker-to-not-use-the-172-17-0-0-range
+    default-address-pools= [
+        { base="10.10.0.0/16"; size=24; }
+    ];
+  };
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
