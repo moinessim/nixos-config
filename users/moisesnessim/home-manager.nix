@@ -75,7 +75,7 @@ in {
     LANG = "en_US.UTF-8";
     LC_CTYPE = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
-    EDITOR = "nvim";
+    EDITOR = "${pkgs.neovim-nightly}/bin/nvim --clean";
     PAGER = "less -FirSwX";
     MANPAGER = "${manpager}/bin/manpager";
   };
