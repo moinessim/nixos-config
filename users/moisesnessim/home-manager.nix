@@ -121,6 +121,7 @@ in {
           exts.pass-otp
           exts.pass-import
       ]);
+      settings.PASSWORD_STORE_KEY = "23AAF91CB405F187";
   };
 
   programs.rofi = {
