@@ -125,10 +125,10 @@
         "homepage": "",
         "owner": "nvim-telescope",
         "repo": "telescope.nvim",
-        "rev": "b923665e64380e97294af09117e50266c20c71c7",
-        "sha256": "0iwlmr94kdr1xwsn2l7ryxx7x1cicpbk86flxzza6877dmig226w",
+        "rev": "bfcc7d5c6f12209139f175e6123a7b7de6d9c18a",
+        "sha256": "1ysbn67rlf2p63pp8155198a5v0hv5cn2bbhdjz9r5255y5f19sk",
         "type": "tarball",
-        "url": "https://github.com/nvim-telescope/telescope.nvim/archive/b923665e64380e97294af09117e50266c20c71c7.tar.gz",
+        "url": "https://github.com/nvim-telescope/telescope.nvim/archive/bfcc7d5c6f12209139f175e6123a7b7de6d9c18a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nvim-treesitter": {
@@ -269,10 +269,10 @@
         "homepage": null,
         "owner": "github",
         "repo": "copilot.vim",
-        "rev": "69455be5d4a892206bc08365ba3648a597485943",
-        "sha256": "0vcdfssw5nvdyxjq9d9vvdvvlwfr35cmrgrjc7ndbdxw778hsai0",
+        "rev": "0668308e68b0ac28b332b204b469fbe04601536a",
+        "sha256": "0vhcdzhrkh3rs88kh481310z9ma775za1gf7nf8fq1x0znd2455w",
         "type": "tarball",
-        "url": "https://github.com/github/copilot.vim/archive/69455be5d4a892206bc08365ba3648a597485943.tar.gz",
+        "url": "https://github.com/github/copilot.vim/archive/0668308e68b0ac28b332b204b469fbe04601536a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vim-cue": {
