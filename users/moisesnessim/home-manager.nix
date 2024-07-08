@@ -75,7 +75,7 @@ in {
     LANG = "en_US.UTF-8";
     LC_CTYPE = "en_US.UTF-8";
     LC_ALL = "en_US.UTF-8";
-    EDITOR = "${pkgs.neovim-nightly}/bin/nvim --clean";
+    EDITOR = "${pkgs.neovim}/bin/nvim --clean";
     PAGER = "less -FirSwX";
     MANPAGER = "${manpager}/bin/manpager";
   };
@@ -294,7 +294,6 @@ in {
 
   programs.neovim = {
     enable = true;
-    package = pkgs.neovim-nightly;
 
     withPython3 = true;
     extraPython3Packages = (p: with p; [
