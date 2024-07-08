@@ -120,9 +120,8 @@ lspconfig.nixd.setup{
     capabilities = capabilities,
 }
 
--- Configure Java LSP
 lspconfig.java_language_server.setup{
-    cmd = { "${pkgs.java-language-server}/bin/java-language-server" },
+    cmd = { "${pkgs.callPackage (sources.nixpkgs + /pkgs/by-name/jd/jdt-language-server/package.nix) {}}/bin/jdtls" },
     capabilities = capabilities,
 }
 
