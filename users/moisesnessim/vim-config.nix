@@ -86,6 +86,26 @@ local lspconfig = require'lspconfig'
 lspconfig.fsautocomplete.setup {
     cmd = { "${pkgs.fsautocomplete-local-or-nix}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" },
     capabilities = capabilities,
+    settings = {
+          FSharp = {
+            EnableReferenceCodeLens = true,
+            ExternalAutocomplete = true,
+            InterfaceStubGeneration = true,
+            InterfaceStubGenerationMethodBody = 'failwith "Not Implemented"',
+            InterfaceStubGenerationObjectIdentifier = "this",
+            Linter = true,
+            RecordStubGeneration = true,
+            RecordStubGenerationBody = 'failwith "Not Implemented"',
+            ResolveNamespaces = true,
+            SimplifyNameAnalyzer = true,
+            UnionCaseStubGeneration = true,
+            UnionCaseStubGenerationBody = 'failwith "Not Implemented"',
+            UnusedDeclarationsAnalyzer = true,
+            UnusedOpensAnalyzer = true,
+            UseSdkScripts = true,
+            keywordsAutocomplete = true
+          }
+        },
     root_dir = function(filename, _)
         local root
         -- in order of preference:
