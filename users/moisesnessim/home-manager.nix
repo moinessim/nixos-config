@@ -129,7 +129,7 @@ in {
       theme = "gruvbox-dark";
       font = "Monaco for Powerline 12";
       extraConfig = {
-          dpi = 180;
+          dpi = 94;
       };
   };
 

@@ -66,7 +66,7 @@
     enable = true;
     layout = "us";
     xkbVariant = "altgr-intl";
-    dpi = 180;
+    dpi = 94;
 
     desktopManager = {
       xterm.enable = false;
