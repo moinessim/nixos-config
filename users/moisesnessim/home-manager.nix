@@ -52,6 +52,7 @@ in {
     pkgs.vifm-full
     pkgs.qtpass
     pkgs.unzip
+    pkgs.zip
 
     jira-cli
 
