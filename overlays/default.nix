@@ -2,6 +2,7 @@
  * other ".nix" files in this directory are automatically loaded.
  */
 final: prev: {
+  mirrord = final.callPackage ../pkgs/mirrord.nix {};
   consul-bin = final.callPackage ../pkgs/consul-bin.nix {};
   create-dmg = final.callPackage ../pkgs/create-dmg.nix {};
   nomad-bin = final.callPackage ../pkgs/nomad-bin.nix {};

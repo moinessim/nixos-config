@@ -53,6 +53,7 @@ in {
     pkgs.qtpass
     pkgs.unzip
     pkgs.zip
+    pkgs.mirrord
 
     jira-cli
 
