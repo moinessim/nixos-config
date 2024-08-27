@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{  lib, pkgs, ... }:
 
 let
   sources = import ../../nix/sources.nix;
@@ -172,13 +172,13 @@ in {
 
   programs.fish = {
     enable = true;
-    interactiveShellInit = lib.strings.concatStrings (lib.strings.intersperse "\n" ([
+    interactiveShellInit = lib.strings.concatStrings (lib.strings.intersperse "\n" [
       "source ${sources.theme-bobthefish}/functions/fish_prompt.fish"
       "source ${sources.theme-bobthefish}/functions/fish_right_prompt.fish"
       "source ${sources.theme-bobthefish}/functions/fish_title.fish"
       (builtins.readFile ./config.fish)
       "set -g SHELL ${pkgs.fish}/bin/fish"
-    ]));
+    ]);
 
     shellAliases = {
       gv = "nvim -c ':G | :only' .";
@@ -347,6 +347,7 @@ in {
 
       vimPlugins.nvim-dap
       vimPlugins.nvim-dap-ui
+      vimPlugins.nvim-dap-virtual-text
 
       vimPlugins.trouble-nvim
       vimPlugins.nvim-web-devicons # required for trouble-nvim
