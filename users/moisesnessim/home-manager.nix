@@ -24,6 +24,26 @@ let
       '';
   };
 
+  shellAliases = {
+    gv = "nvim -c ':G | :only' .";
+    gf = "git fetch";
+    ga = "git add";
+    gc = "git commit";
+    gco = "git checkout";
+    gcp = "git cherry-pick";
+    gdiff = "git diff";
+    gd = "git diff";
+    gl = "git prettylog";
+    gp = "git push";
+    gs = "git status";
+    gt = "git tag";
+  } // (if isLinux then {
+    # Two decades of using a Mac has made this such a strong memory
+    # that I'm just going to keep it consistent.
+    pbcopy = "xclip";
+    pbpaste = "xclip -o";
+  } else {});
+
 in {
   # Home-manager 22.11 requires this be set. We never set it so we have
   # to use the old state version.
@@ -142,20 +162,7 @@ in {
     shellOptions = [];
     historyControl = [ "ignoredups" "ignorespace" ];
     initExtra = builtins.readFile ./bashrc;
-
-    shellAliases = {
-      gv = "nvim -c ':G | :only' .";
-      gf = "git fetch";
-      ga = "git add";
-      gc = "git commit";
-      gco = "git checkout";
-      gcp = "git cherry-pick";
-      gdiff = "git diff";
-      gl = "git prettylog";
-      gp = "git push";
-      gs = "git status";
-      gt = "git tag";
-    };
+    inherit shellAliases;
   };
 
   programs.direnv= {
@@ -181,24 +188,7 @@ in {
       "set -g SHELL ${pkgs.fish}/bin/fish"
     ]);
 
-    shellAliases = {
-      gv = "nvim -c ':G | :only' .";
-      gf = "git fetch";
-      ga = "git add";
-      gc = "git commit";
-      gco = "git checkout";
-      gcp = "git cherry-pick";
-      gdiff = "git diff";
-      gl = "git prettylog";
-      gp = "git push";
-      gs = "git status";
-      gt = "git tag";
-    } // (if isLinux then {
-      # Two decades of using a Mac has made this such a strong memory
-      # that I'm just going to keep it consistent.
-      pbcopy = "xclip";
-      pbpaste = "xclip -o";
-    } else {});
+    inherit shellAliases;
 
     plugins = map (n: {
       name = n;
@@ -215,7 +205,7 @@ in {
     userName = "Moises Nessim";
     userEmail = "moises.nessim@topmanage.com";
     aliases = {
-      cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 -r git branch -d";
+      cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 -r git branch -d";
       prettylog = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(r) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
       root = "rev-parse --show-toplevel";
     };
