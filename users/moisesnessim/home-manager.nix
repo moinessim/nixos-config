@@ -28,6 +28,7 @@ let
     gv = "nvim -c ':G | :only' .";
     gf = "git fetch";
     ga = "git add";
+    gba = "git branch -r --no-merged $(git branch -l main master --format '%(refname:short)' | head -n 1)";
     gc = "git commit";
     gco = "git checkout";
     gcp = "git cherry-pick";
