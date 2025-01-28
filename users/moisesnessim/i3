@@ -181,6 +181,9 @@ bindsym $mod+r mode "$mode_resize"
 
 bindsym $mod+Shift+x exec --no-startup-id xrandr-auto
 
+# Keybinding to toggle DPI
+bindsym $mod+Shift+t exec --no-startup-id dpi-toggle
+
 #----------------------------------------------------------------------
 # System Mode
 #----------------------------------------------------------------------

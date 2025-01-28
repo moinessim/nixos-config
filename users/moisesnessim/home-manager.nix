@@ -24,6 +24,58 @@ let
       '';
   };
 
+  dpi-toggle = pkgs.writeShellScriptBin "dpi-toggle" ''
+
+      # Get current DPI setting
+      current_dpi=$(xrdb -query | grep -E 'Xft.dpi' | awk '{print $2}')
+
+      # Define DPI values
+      LOW_DPI=96
+      HIGH_DPI=144
+
+      # Toggle DPI
+      if [[ "$current_dpi" == "$LOW_DPI" ]]; then
+          # Set high DPI
+          xrandr --dpi $HIGH_DPI
+          xrdb -merge <<< "Xft.dpi: $HIGH_DPI"
+      else
+          # Set low DPI
+          xrandr --dpi $LOW_DPI
+          xrdb -merge <<< "Xft.dpi: $LOW_DPI"
+      fi
+
+
+      # Update GTK settings
+      if [[ "$current_dpi" == "$LOW_DPI" ]]; then
+          echo -e "[Settings]\ngtk-xft-dpi=$((HIGH_DPI * 1000))" > ~/.config/gtk-3.0/settings.ini
+      else
+          echo -e "[Settings]\ngtk-xft-dpi=$((LOW_DPI * 1000))" > ~/.config/gtk-3.0/settings.ini
+      fi
+
+
+      # Update Qt scaling
+      if [[ "$current_dpi" == "$LOW_DPI" ]]; then
+          export QT_SCALE_FACTOR=1.5
+          export QT_ENABLE_HIGHDPI_SCALING=1
+      else
+          export QT_SCALE_FACTOR=1
+          export QT_ENABLE_HIGHDPI_SCALING=
+      fi
+
+      # Update i3status
+      if [[ "$current_dpi" == "$LOW_DPI" ]]; then
+        echo hdpi  > ~/.config/i3status/dpi
+      else
+        echo "" > ~/.config/i3status/dpi
+      fi
+
+      # Reload i3 configuration
+      i3-msg reload
+
+      qutebrowser --no-window :restart
+
+      '';
+
   shellAliases = {
     gv = "nvim -c ':G | :only' .";
     gf = "git fetch";
@@ -77,6 +129,7 @@ in {
     pkgs.mirrord
 
     jira-cli
+    dpi-toggle
 
     # Node is required for Copilot.vim
     pkgs.nodejs
@@ -279,7 +332,14 @@ in {
     modules = {
       ipv6.enable = false;
       "wireless _first_".enable = false;
+      "ethernet _first_".enable = false;
       "battery all".enable = false;
+      "read_file DPI" = {
+        position = 0;
+        settings = {
+          path = "/home/moisesnessim/.config/i3status/dpi";
+        };
+      };
     };
   };
 
