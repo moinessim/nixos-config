@@ -203,9 +203,9 @@ in {
   programs.rofi = {
       enable = isLinux;
       theme = "gruvbox-dark";
-      font = "Monaco for Powerline 12";
+      font = "Monaco for Powerline 14";
       extraConfig = {
-          dpi = 94;
+          dpi = 0;
       };
   };
 
