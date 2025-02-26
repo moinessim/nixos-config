@@ -24,6 +24,26 @@ let
       '';
   };
 
+  jira-select-project = pkgs.writeShellScriptBin "jira-select-project"
+      ''
+        set -euo pipefail
+        ${jira-cli}/bin/jira project list | ${pkgs.fzf}/bin/fzf | ${pkgs.gawk}/bin/awk '{print $1}'
+      '';
+
+  jira-select-issue = pkgs.writeShellScriptBin "jira-select-issue"
+      ''
+        set -euo pipefail
+        project=$(${jira-select-project}/bin/jira-select-project)
+        ${jira-cli}/bin/jira issue list --project "$project" | ${pkgs.fzf}/bin/fzf | ${pkgs.gawk}/bin/awk '{print $1}'
+      '';
+
+  jira-issue-create = pkgs.writeShellScriptBin "jira-issue-create"
+      ''
+        set -euo pipefail
+        project=$(${jira-select-project}/bin/jira-select-project)
+        ${jira-cli}/bin/jira issue create --project "$project"
+      '';
+
   dpi-toggle = pkgs.writeShellScriptBin "dpi-toggle" ''
 
       # Get current DPI setting
@@ -119,16 +139,21 @@ in {
     pkgs.htop
     pkgs.btop
     pkgs.jq
+    pkgs.yq
     pkgs.ripgrep
     pkgs.tree
     pkgs.watch
     pkgs.vifm-full
     pkgs.qtpass
+    pkgs.gawk
     pkgs.unzip
     pkgs.zip
     pkgs.mirrord
 
     jira-cli
+    jira-select-project
+    jira-select-issue
+    jira-issue-create
     dpi-toggle
 
     # Node is required for Copilot.vim
