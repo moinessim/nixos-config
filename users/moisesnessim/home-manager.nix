@@ -34,7 +34,14 @@ let
       ''
         set -euo pipefail
         project=$(${jira-select-project}/bin/jira-select-project)
-        ${jira-cli}/bin/jira issue list --project "$project" | ${pkgs.fzf}/bin/fzf | ${pkgs.gawk}/bin/awk '{print $1}'
+        ${jira-cli}/bin/jira issue list --plain --columns key,type,status,summary  --project "$project" | ${pkgs.fzf}/bin/fzf | ${pkgs.gawk}/bin/awk '{print $1}'
+      '';
+
+  jira-view-issue = pkgs.writeShellScriptBin "jira-view-issue"
+      ''
+        set -euo pipefail
+        issue=$(${jira-select-issue}/bin/jira-select-issue)
+        ${jira-cli}/bin/jira issue view "$issue"
       '';
 
   jira-issue-create = pkgs.writeShellScriptBin "jira-issue-create"
@@ -153,6 +160,7 @@ in {
     jira-cli
     jira-select-project
     jira-select-issue
+    jira-view-issue
     jira-issue-create
     dpi-toggle
 
