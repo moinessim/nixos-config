@@ -30,6 +30,12 @@ let
         ${jira-cli}/bin/jira project list | ${pkgs.fzf}/bin/fzf | ${pkgs.gawk}/bin/awk '{print $1}'
       '';
 
+  jira-select-projects = pkgs.writeShellScriptBin "jira-select-projects"
+      ''
+        set -euo pipefail
+        ${jira-cli}/bin/jira project list | ${pkgs.fzf}/bin/fzf --multi | ${pkgs.gawk}/bin/awk '{print $1}'
+      '';
+
   jira-select-issue = pkgs.writeShellScriptBin "jira-select-issue"
       ''
         set -euo pipefail
@@ -49,6 +55,33 @@ let
         set -euo pipefail
         project=$(${jira-select-project}/bin/jira-select-project)
         ${jira-cli}/bin/jira issue create --project "$project"
+      '';
+
+  jira-issue-create-in-projects = pkgs.writeShellScriptBin "jira-issue-create-in-projects"
+      ''
+        set -euo pipefail
+        issueType=$(
+        ${pkgs.fzf}/bin/fzf <<< $'Bug\nFeature Request\nNew Feature\nImprovement\nSub-task\nStory\nTask\nTechnical task\nEscalation')
+        read -p "Summary: " summary
+        read -p "Set body? [y/N] " set_body
+        if [[ "$set_body" == "y" ]]; then
+          TEMP_FILE=$(mktemp)
+          nvim "$TEMP_FILE"
+          body=$(cat "$TEMP_FILE")
+          rm "$TEMP_FILE"
+        else
+          body=""
+        fi
+        read -p "Label: " label
+        if [[ -n "$label" ]]; then
+          label="--label $label"
+        else
+          label=""
+        fi
+        projects=$(${jira-select-projects}/bin/jira-select-projects)
+        for project in $projects; do
+          ${jira-cli}/bin/jira issue create --no-input --type "$issueType" --summary "$summary" --project "$project" --body="$body" $label
+        done
       '';
 
   dpi-toggle = pkgs.writeShellScriptBin "dpi-toggle" ''
@@ -162,6 +195,7 @@ in {
     jira-select-issue
     jira-view-issue
     jira-issue-create
+    jira-issue-create-in-projects
     dpi-toggle
 
     # Node is required for Copilot.vim
