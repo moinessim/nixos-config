@@ -340,6 +340,7 @@ in {
       credential.helper = "store"; # want to make this more secure
       github.user = "moinessim";
       push.default = "tracking";
+      push.autoSetupRemote = true;
       init.defaultBranch = "master";
     };
   };
