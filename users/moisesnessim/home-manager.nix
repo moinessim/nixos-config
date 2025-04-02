@@ -13,6 +13,19 @@ let
     cat "$1" | col -bx | bat --language man --style plain
   ''));
 
+  git-active-branches = pkgs.writeShellScriptBin "git-active-branches" ''
+    # Determine the default branch dynamically (main or master)
+    BASE_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+
+    # List remote branches ahead of the base branch
+    git branch -r | grep -v "origin/$BASE_BRANCH" | while read branch; do
+        # Check if the remote branch has commits ahead of the base branch
+        if [ -n "$(git log origin/"$BASE_BRANCH".."$branch" --oneline)" ]; then
+            echo "$branch"
+        fi
+    done
+    '';
+
   jira-cli = pkgs.symlinkJoin {
     name = "jira-cli";
     paths = [
@@ -197,6 +210,7 @@ in {
     jira-issue-create
     jira-issue-create-in-projects
     dpi-toggle
+    git-active-branches
 
     # Node is required for Copilot.vim
     pkgs.nodejs
