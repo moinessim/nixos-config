@@ -6,7 +6,7 @@
 
   nix = {
     # use unstable nix so we can access flakes
-    package = pkgs.nixUnstable;
+    package = pkgs.nixVersions.latest;
     extraOptions = ''
       experimental-features = nix-command flakes
       keep-outputs = true
@@ -62,10 +62,14 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   # setup windowing environment
+  services.displayManager.defaultSession = "none+i3";
+
   services.xserver = {
     enable = true;
     layout = "us";
     xkbVariant = "altgr-intl";
+    xkb.layout = "us";
+    xkb.variant = "altgr-intl";
     dpi = 144;
 
     desktopManager = {
@@ -122,7 +126,7 @@
     gnumake
     killall
     niv
-    rxvt_unicode
+    rxvt-unicode-unwrapped
     xclip
 
     # For hypervisors that support auto-resizing, this script forces it.
