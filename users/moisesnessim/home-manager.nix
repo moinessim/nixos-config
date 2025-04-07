@@ -222,6 +222,7 @@ in {
     pkgs.chromium
     pkgs.firefox
     pkgs.zathura
+    pkgs.autocutsel
   ]);
 
   #---------------------------------------------------------------------

@@ -21,4 +21,17 @@
   nixpkgs.overlays = import ../../lib/overlays.nix ++ [
     (import ./vim.nix)
   ];
+
+  systemd.user.services.autocutsel = {
+    enable = true;
+    description = "Clipboard sync between PRIMARY and CLIPBOARD";
+    after = [ "graphical-session.target" ];
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.autocutsel}/bin/autocutsel -fork && ${pkgs.autocutsel}/bin/autocutsel -selection PRIMARY -fork'";
+      Restart = "always";
+    };
+  };
+
 }
