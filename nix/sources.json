@@ -65,10 +65,10 @@
         "homepage": "",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "10288e3815028f9357acee3bdede845adb0a3585",
-        "sha256": "0l8jvb57616yy7l1d7ak419h9xmxgkljxyg82iv0wbvrsy0q114z",
+        "rev": "fcec87c2f63bdd11b669a3d5f217251abe6d8a88",
+        "sha256": "18hwvy6g1i3m4v5sgdvm75vr4g1n7ynxm4i2zmfdi1l3p3r5b3vf",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs/archive/10288e3815028f9357acee3bdede845adb0a3585.tar.gz",
+        "url": "https://github.com/NixOS/nixpkgs/archive/fcec87c2f63bdd11b669a3d5f217251abe6d8a88.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nvim-comment": {
@@ -89,10 +89,10 @@
         "homepage": "",
         "owner": "neovim",
         "repo": "nvim-lspconfig",
-        "rev": "442e077e326ac467daf9cd63e72120fb450a850b",
-        "sha256": "13y3caydcqqpk2mmksf8gis1n2bjgsayz129a8vqidb5in0bj3iv",
+        "rev": "9ae789e7450995e4c06ed9f8f74629992d5d28a6",
+        "sha256": "01h7kpaji4293axdzc5jhfr24ifsn52vzp8hm0y091pkwvw5v8j7",
         "type": "tarball",
-        "url": "https://github.com/neovim/nvim-lspconfig/archive/442e077e326ac467daf9cd63e72120fb450a850b.tar.gz",
+        "url": "https://github.com/neovim/nvim-lspconfig/archive/9ae789e7450995e4c06ed9f8f74629992d5d28a6.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nvim-magma": {
@@ -353,10 +353,10 @@
         "homepage": null,
         "owner": "moinessim",
         "repo": "vim-misc",
-        "rev": "ef7f255e68cd31bc571dc8b1c20f7d5c2552c47a",
-        "sha256": "0wj4ic6ic4ph9skvqqp4bn4cclvp0f3s7wp04gqfabgnycn9zpwz",
+        "rev": "ba41b36aa959058efcfde5d5fef9a6900a633275",
+        "sha256": "0cklb6nk7wqgqxlqbfxfvhmhaplpmiffw29ja34lp811sgamb2za",
         "type": "tarball",
-        "url": "https://github.com/moinessim/vim-misc/archive/ef7f255e68cd31bc571dc8b1c20f7d5c2552c47a.tar.gz",
+        "url": "https://github.com/moinessim/vim-misc/archive/ba41b36aa959058efcfde5d5fef9a6900a633275.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vim-nord": {
