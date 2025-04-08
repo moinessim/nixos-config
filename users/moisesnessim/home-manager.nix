@@ -516,6 +516,7 @@ in {
 
   services.gpg-agent = {
     enable = isLinux;
+    pinentryPackage = pkgs.pinentry-gtk2;
 
     # cache the keys forever so we don't get asked for a password
     defaultCacheTtl = 31536000;
@@ -525,6 +526,14 @@ in {
   services.picom.enable = isLinux;
 
   services.safeeyes.enable = isLinux;
+  services.snixembed = {
+    enable = isLinux;
+
+    beforeUnits = [
+      # https://github.com/slgobinath/SafeEyes/wiki/How-to-install-backend-for-Safe-Eyes-tray-icon
+      "safeeyes.service"
+    ];
+  };
 
   services.copyq = {
     enable = isLinux;
