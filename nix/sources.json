@@ -353,10 +353,10 @@
         "homepage": null,
         "owner": "moinessim",
         "repo": "vim-misc",
-        "rev": "ba41b36aa959058efcfde5d5fef9a6900a633275",
-        "sha256": "0cklb6nk7wqgqxlqbfxfvhmhaplpmiffw29ja34lp811sgamb2za",
+        "rev": "2f33b4546344fb9d30f7ef93b3137824bf5afe23",
+        "sha256": "0il3kqinlz7ydgpl3rx01q3dwqjl6n6xnzzzjga8kz4zbazx996q",
         "type": "tarball",
-        "url": "https://github.com/moinessim/vim-misc/archive/ba41b36aa959058efcfde5d5fef9a6900a633275.tar.gz",
+        "url": "https://github.com/moinessim/vim-misc/archive/2f33b4546344fb9d30f7ef93b3137824bf5afe23.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vim-nord": {

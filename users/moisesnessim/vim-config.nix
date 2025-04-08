@@ -165,6 +165,13 @@ lspconfig.lua_ls.setup {
             -- (most likely LuaJIT in the case of Neovim)
             version = 'LuaJIT'
           },
+         diagnostics = {
+            -- Get the language server to recognize the `vim` global
+            globals = {
+              'vim',
+              'require'
+            },
+          },
           -- Make the server aware of Neovim runtime files
           workspace = {
             checkThirdParty = false,
