@@ -22,14 +22,24 @@
     (import ./vim.nix)
   ];
 
-  systemd.user.services.autocutsel = {
+  systemd.user.services.autocutsel-clipboard = {
     enable = true;
-    description = "Clipboard sync between PRIMARY and CLIPBOARD";
-    after = [ "graphical-session.target" ];
+    description = "Clipboard sync: CLIPBOARD <-→ BUFFER-CUT";
     wantedBy = [ "default.target" ];
+    after = [ "graphical-session.target" ];
     serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.autocutsel}/bin/autocutsel -fork && ${pkgs.autocutsel}/bin/autocutsel -selection PRIMARY -fork'";
+      ExecStart = "${pkgs.autocutsel}/bin/autocutsel";
+      Restart = "always";
+    };
+  };
+
+  systemd.user.services.autocutsel-primary = {
+    enable = true;
+    description = "Clipboard sync: PRIMARY <-→ BUFFER-CUT";
+    wantedBy = [ "default.target" ];
+    after = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.autocutsel}/bin/autocutsel -selection PRIMARY";
       Restart = "always";
     };
   };
