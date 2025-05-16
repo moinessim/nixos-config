@@ -247,15 +247,6 @@ in {
   # Rectangle.app. This has to be imported manually using the app.
   xdg.configFile."rectangle/RectangleConfig.json".text = builtins.readFile ./RectangleConfig.json;
 
-  # tree-sitter parsers
-  xdg.configFile."nvim/parser/proto.so".source = "${pkgs.tree-sitter-proto}/parser";
-  xdg.configFile."nvim/queries/proto/folds.scm".source =
-    "${sources.tree-sitter-proto}/queries/folds.scm";
-  xdg.configFile."nvim/queries/proto/highlights.scm".source =
-    "${sources.tree-sitter-proto}/queries/highlights.scm";
-  xdg.configFile."nvim/queries/proto/textobjects.scm".source =
-    ./textobjects.scm;
-
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
@@ -459,9 +450,12 @@ in {
       customVim.nvim-lspconfig
       customVim.nvim-plenary # required for telescope
       customVim.nvim-telescope
-      customVim.nvim-treesitter
-      customVim.nvim-treesitter-playground
-      customVim.nvim-treesitter-textobjects
+      # customVim.nvim-treesitter
+      # customVim.nvim-treesitter-playground
+      # customVim.nvim-treesitter-textobjects
+      vimPlugins.nvim-treesitter.withAllGrammars
+
+
       customVim.nvim-magma
       customVim.vifm-vim
       customVim.toggleterm

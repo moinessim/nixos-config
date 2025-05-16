@@ -227,30 +227,6 @@
         "url": "https://github.com/akinsho/toggleterm.nvim/archive/9a88eae817ef395952e08650b3283726786fb5fb.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "tree-sitter-hcl": {
-        "branch": "main",
-        "description": "A tree-sitter grammar for HCL (HashiCorp Configuration Language), used by projects such as Terraform.",
-        "homepage": "",
-        "owner": "mitchellh",
-        "repo": "tree-sitter-hcl",
-        "rev": "bdc2ee0cbd19d22f8a1529e5c9d099029573c931",
-        "sha256": "059knii4piigq8sjfpc8a5cjz2x1g3md88j05h0yh26qzn0i4fci",
-        "type": "tarball",
-        "url": "https://github.com/mitchellh/tree-sitter-hcl/archive/bdc2ee0cbd19d22f8a1529e5c9d099029573c931.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "tree-sitter-proto": {
-        "branch": "main",
-        "description": "A tree-sitter grammar for protocol buffer files (proto3).",
-        "homepage": null,
-        "owner": "mitchellh",
-        "repo": "tree-sitter-proto",
-        "rev": "42d82fa18f8afe59b5fc0b16c207ee4f84cb185f",
-        "sha256": "001y2z2683fagryqj5f0gs3rcgx2nbw3x3r9afydhss80ihb8zvi",
-        "type": "tarball",
-        "url": "https://github.com/mitchellh/tree-sitter-proto/archive/42d82fa18f8afe59b5fc0b16c207ee4f84cb185f.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "vifm.vim": {
         "branch": "master",
         "description": "Vim plugin that allows use of vifm as a file picker",

@@ -24,18 +24,7 @@ endif
 
 lua <<EOF
 ---------------------------------------------------------------------
--- Add our custom treesitter parsers
-local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
 
-parser_config.proto = {
-  install_info = {
-    url = "${sources.tree-sitter-proto}", -- local path or git repo
-    files = {"src/parser.c"}
-  },
-  filetype = "proto", -- if filetype does not agrees with parser name
-}
-
----------------------------------------------------------------------
 -- Add our treesitter textobjects
 require'nvim-treesitter.configs'.setup {
   textobjects = {

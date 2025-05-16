@@ -146,18 +146,4 @@ let sources = import ../../nix/sources.nix; in rec {
       src = sources.nvim-treesitter-textobjects;
     };
   };
-
-  tree-sitter-proto = self.callPackage
-    (sources.nixpkgs + /pkgs/development/tools/parsing/tree-sitter/grammar.nix) { } {
-    language = "proto";
-    version  = "0.1.0";
-    src   = sources.tree-sitter-proto;
-  };
-
-  tree-sitter-hcl = self.callPackage
-    (sources.nixpkgs + /pkgs/development/tools/parsing/tree-sitter/grammar.nix) { } {
-    language = "hcl";
-    version  = "0.1.0";
-    src   = sources.tree-sitter-hcl;
-  };
 }
