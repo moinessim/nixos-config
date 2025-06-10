@@ -47,6 +47,21 @@ let sources = import ../../nix/sources.nix; in rec {
     vim-misc = vimUtils.buildVimPlugin {
       name = "vim-misc";
       src = sources.vim-misc;
+      dependencies  = with vimPlugins; [
+        vimPlugins.nvim-dap
+        vimPlugins.nvim-dap-ui
+        vimPlugins.nvim-dap-virtual-text
+        toggleterm-nvim
+        vimPlugins.plenary-nvim  # required for telescope
+        vimPlugins.telescope-nvim
+        vimPlugins.trouble-nvim
+        vimPlugins.lspkind-nvim
+        vimPlugins.nvim-cmp
+        vimPlugins.nvim-treesitter.withAllGrammars
+        comment-nvim
+      ]
+      ++ vimPlugins.nvim-dap-ui.dependencies
+      ;
     };
 
     vim-pgsql = vimUtils.buildVimPlugin {

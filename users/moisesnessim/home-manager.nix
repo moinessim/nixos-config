@@ -433,13 +433,12 @@ in {
     ]);
 
     plugins = with pkgs; [
-      customVim.which-key-nvim
+      vimPlugins.which-key-nvim
       customVim.vim-copilot
       customVim.vim-cue
       customVim.vim-fish
       customVim.vim-fugitive
       customVim.vim-glsl
-      customVim.vim-misc
       customVim.vim-pgsql
       customVim.vim-tla
       customVim.pigeon
@@ -448,8 +447,10 @@ in {
       customVim.vim-devicons
       customVim.vim-nord
       customVim.nvim-lspconfig
-      customVim.nvim-plenary # required for telescope
-      customVim.nvim-telescope
+      # customVim.nvim-plenary # required for telescope
+      vimPlugins.plenary-nvim  # required for telescope
+      # customVim.nvim-telescope
+      vimPlugins.telescope-nvim
       # customVim.nvim-treesitter
       # customVim.nvim-treesitter-playground
       # customVim.nvim-treesitter-textobjects
@@ -458,7 +459,8 @@ in {
 
       customVim.nvim-magma
       customVim.vifm-vim
-      customVim.toggleterm
+      # customVim.toggleterm
+      vimPlugins.toggleterm-nvim
       customVim.comment-nvim
       vimPlugins.nvim-surround
 
@@ -486,6 +488,9 @@ in {
       vimPlugins.vim-nix
       vimPlugins.typescript-vim
       vimPlugins.plantuml-syntax
+
+      customVim.vim-misc
+
     ];
 
     extraConfig = (import ./vim-config.nix) { inherit sources pkgs; };
