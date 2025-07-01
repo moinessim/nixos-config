@@ -202,6 +202,7 @@ in {
     pkgs.unzip
     pkgs.zip
     pkgs.mirrord
+    pkgs.bruno
 
     jira-cli
     jira-select-project
