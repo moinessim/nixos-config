@@ -25,7 +25,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, darwin, ... }@inputs: let
+  outputs = { nixpkgs, home-manager, darwin, ... }@inputs: let
 
     mkDarwin = import ./lib/mkdarwin.nix;
     mkVM = import ./lib/mkvm.nix;
@@ -57,19 +57,19 @@
       })];
     };
 
-    nixosConfigurations.vm-aarch64-prl = mkVM "vm-aarch64-prl" rec {
+    nixosConfigurations.vm-aarch64-prl = mkVM "vm-aarch64-prl" {
       inherit overlays nixpkgs home-manager additionalModules;
       system = "aarch64-linux";
       user   = "moisesnessim";
     };
 
-    nixosConfigurations.vm-aarch64-utm = mkVM "vm-aarch64-utm" rec {
+    nixosConfigurations.vm-aarch64-utm = mkVM "vm-aarch64-utm" {
       inherit overlays nixpkgs home-manager additionalModules;
       system = "aarch64-linux";
       user   = "moisesnessim";
     };
 
-    nixosConfigurations.vm-intel = mkVM "vm-intel" rec {
+    nixosConfigurations.vm-intel = mkVM "vm-intel" {
       inherit nixpkgs home-manager overlays additionalModules;
       system = "x86_64-linux";
       user   = "moisesnessim";
