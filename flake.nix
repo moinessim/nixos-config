@@ -30,7 +30,10 @@
     mkDarwin = import ./lib/mkdarwin.nix;
     mkVM = import ./lib/mkvm.nix;
 
-    additionalModules = [ (import ./modules/registry.nix inputs) ];
+    additionalModules = [
+      (import ./modules/registry.nix inputs)
+      ./modules/grafana.nix
+    ];
 
     # Overlays is the list of overlays we want to apply from flake inputs.
     overlays = [
