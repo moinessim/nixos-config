@@ -49,7 +49,7 @@
         # open-vm-tools = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.open-vm-tools;
 
         inherit (
-            inputs.nixpkgs-unstable.legacyPackages.${prev.system}
+            inputs.nixpkgs.legacyPackages.${prev.system}
             .callPackage ./pkgs/fsautocomplete.nix {})
           fsautocomplete fsautocomplete-local-or-nix;
         nixd = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.nixd;
