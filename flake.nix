@@ -37,6 +37,9 @@
 
     # Overlays is the list of overlays we want to apply from flake inputs.
     overlays = [
+      (final: prev: {
+        unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+      })
     ];
   in {
     nixosConfigurations.vm-aarch64 = mkVM "vm-aarch64" {

@@ -29,7 +29,7 @@ let
   jira-cli = pkgs.symlinkJoin {
     name = "jira-cli";
     paths = [
-      pkgs.jira-cli-go
+      pkgs.unstable.jira-cli-go
     ];
     buildInputs = [ pkgs.makeWrapper ];
     postBuild = ''
