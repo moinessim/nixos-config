@@ -156,6 +156,7 @@ let
     gba = "git branch -r --no-merged $(git branch -l main master --format '%(refname:short)' | head -n 1)";
     gc = "git commit";
     gco = "git checkout";
+    gcom = "git checkout main || git checkout master && git pull --no-rebase";
     gcp = "git cherry-pick";
     gdiff = "git diff";
     gd = "git diff";
