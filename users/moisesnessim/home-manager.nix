@@ -60,7 +60,7 @@ let
       ''
         set -euo pipefail
         issue=$(${jira-select-issue}/bin/jira-select-issue)
-        ${jira-cli}/bin/jira issue view "$issue"
+        ${jira-cli}/bin/jira issue view "$issue" "$@"
       '';
 
   jira-issue-create = pkgs.writeShellScriptBin "jira-issue-create"
@@ -96,6 +96,78 @@ let
           ${jira-cli}/bin/jira issue create --no-input --type "$issueType" --summary "$summary" --project "$project" --body="$body" $label
         done
       '';
+
+  jira-branch-from-issue = pkgs.writeShellScriptBin "jira-branch-from-issue" ''
+
+    usage(){
+      echo "Usage: $0 [-d|--dry-run] [-h|--help] <ISSUE_KEY>"
+    }
+
+    while [ $# -gt 0 ]; do
+      case "$1" in
+        -h|--help)
+          usage
+          exit 0
+          ;;
+        -d|--dry-run)
+          DRY_RUN=true
+          ;;
+        *)
+          ISSUE="$1"
+          ;;
+      esac
+      shift
+    done
+
+
+    if [ -z "$ISSUE" ];
+    then
+      DATA=$(${jira-view-issue}/bin/jira-view-issue --raw)
+    else
+      DATA=$(${jira-cli}/bin/jira issue view "$ISSUE" --raw)
+    fi
+
+
+    if [ $? -ne 0 ]; then
+      echo "Error fetching issue $ISSUE"
+      exit 1
+    fi
+
+    KEY=$(echo "$DATA" | jq -r '.key')
+    SUMMARY=$(echo "$DATA" | jq -r '.fields.summary')
+    TYPE=$(echo "$DATA" | jq -r '.fields.issuetype.name' | tr '[:upper:]' '[:lower:]')
+
+    # Determine prefix based on issue type
+    case "$TYPE" in
+      bug|bugfix|defect)
+        PREFIX="bugfix"
+        ;;
+      hotfix)
+        PREFIX="hotfix"
+        ;;
+      *)
+        PREFIX="feature"
+        ;;
+    esac
+
+    # Sanitize summary → slug
+    SLUG=$(echo "$SUMMARY" | tr '[:upper:]' '[:lower:]' \
+      | sed -E 's/[^a-z0-9]+/-/g' | sed 's/^-//; s/-$//')
+
+    BRANCH="''${PREFIX}/''${KEY}-''${SLUG}"
+
+    if [ "$DRY_RUN" = true ]; then
+      echo "Dry run: would create branch '$BRANCH'" 1>&2
+      echo "$BRANCH"
+      exit 0
+    fi
+
+    echo "Creating branch: $BRANCH" 1>&2
+    git checkout -b "$BRANCH" 1>&2
+    echo "$BRANCH"
+    '';
+
+
 
   dpi-toggle = pkgs.writeShellScriptBin "dpi-toggle" ''
 
@@ -211,6 +283,7 @@ in {
     jira-view-issue
     jira-issue-create
     jira-issue-create-in-projects
+    jira-branch-from-issue
     dpi-toggle
     git-active-branches
 
