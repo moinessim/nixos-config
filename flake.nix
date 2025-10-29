@@ -33,6 +33,7 @@
     additionalModules = [
       (import ./modules/registry.nix inputs)
       ./modules/grafana.nix
+      { programs.command-not-found.enable = false; }
     ];
 
     # Overlays is the list of overlays we want to apply from flake inputs.
