@@ -1,0 +1,394 @@
+#  NOTE(koekeishiya): A list of all built-in modifier and literal keywords can
+#                     be found at https://github.com/koekeishiya/skhd/issues/1
+#
+#                     A hotkey is written according to the following rules:
+#
+#                       hotkey       = <mode> '<' <action> | <action>
+#
+#                       mode         = 'name of mode' | <mode> ',' <mode>
+#
+#                       action       = <keysym> '[' <proc_map_lst> ']' | <keysym> '->' '[' <proc_map_lst> ']'
+#                                      <keysym> ':' <command>          | <keysym> '->' ':' <command>
+#                                      <keysym> ';' <mode>             | <keysym> '->' ';' <mode>
+#
+#                       keysym       = <mod> '-' <key> | <key>
+#
+#                       mod          = 'modifier keyword' | <mod> '+' <mod>
+#
+#                       key          = <literal> | <keycode>
+#
+#                       literal      = 'single letter or built-in keyword'
+#
+#                       keycode      = 'apple keyboard kVK_<Key> values (0x3C)'
+#
+#                       proc_map_lst = * <proc_map>
+#
+#                       proc_map     = <string> ':' <command> | <string>     '~' |
+#                                      '*'      ':' <command> | '*'          '~'
+#
+#                       string       = '"' 'sequence of characters' '"'
+#
+#                       command      = command is executed through '$SHELL -c' and
+#                                      follows valid shell syntax. if the $SHELL environment
+#                                      variable is not set, it will default to '/bin/bash'.
+#                                      when bash is used, the ';' delimeter can be specified
+#                                      to chain commands.
+#
+#                                      to allow a command to extend into multiple lines,
+#                                      prepend '\' at the end of the previous line.
+#
+#                                      an EOL character signifies the end of the bind.
+#
+#                       ->           = keypress is not consumed by skhd
+#
+#                       *            = matches every application not specified in <proc_map_lst>
+#
+#                       ~            = application is unbound and keypress is forwarded per usual, when specified in a <proc_map>
+#
+#  NOTE(koekeishiya): A mode is declared according to the following rules:
+#
+#                       mode_decl = '::' <name> '@' ':' <command> | '::' <name> ':' <command> |
+#                                   '::' <name> '@'               | '::' <name>
+#
+#                       name      = desired name for this mode,
+#
+#                       @         = capture keypresses regardless of being bound to an action
+#
+#                       command   = command is executed through '$SHELL -c' and
+#                                   follows valid shell syntax. if the $SHELL environment
+#                                   variable is not set, it will default to '/bin/bash'.
+#                                   when bash is used, the ';' delimeter can be specified
+#                                   to chain commands.
+#
+#                                   to allow a command to extend into multiple lines,
+#                                   prepend '\' at the end of the previous line.
+#
+#                                   an EOL character signifies the end of the bind.
+
+# add an on_enter command to the default mode
+# :: default : chunkc border::color 0xff775759
+#
+# defines a new mode 'test' with an on_enter command, that captures keypresses
+# :: test @ : chunkc border::color 0xff24ccaa
+#
+# from 'default' mode, activate mode 'test'
+# cmd - x ; test
+#
+# from 'test' mode, activate mode 'default'
+# test < cmd - x ; default
+#
+# launch a new terminal instance when in either 'default' or 'test' mode
+# default, test < cmd - return : open -na /Applications/Terminal.app
+
+# application specific bindings
+#
+# cmd - n [
+#     "kitty"       : echo "hello kitty"
+#     *             : echo "hello everyone"
+#     "qutebrowser" : echo "hello qutebrowser"
+#     "terminal"    ~
+#     "finder"      : false
+# ]
+
+# specify a file that should be included as an additional config-file.
+# treated as an absolutepath if the filename begins with '/' otherwise
+# the file is relative to the path of the config-file it was loaded from.
+#
+# .load "/Users/Koe/.config/partial_skhdrc"
+# .load "partial_skhdrc"
+
+# prevent skhd from monitoring events for specific applications.
+#
+# .blacklist [
+#    "kitty"
+#    "terminal"
+#    "qutebrowser"
+# ]
+
+# open terminal, blazingly fast compared to iTerm/rcmd + rshift + ralt + rctrl
+# cmd - return : /Applications/kitty.app/Contents/MacOS/kitty --single-instance -d ~
+
+# Prevent app quiting with cmd - q. Lock pc instead.
+cmd - q : skhd -k "ctrl + cmd - q"
+
+# Tildes y ñ
+rcmd + rshift + ralt + rctrl - a : skhd -t "á"
+rcmd + rshift + ralt + rctrl - e : skhd -t "é"
+rcmd + rshift + ralt + rctrl - i : skhd -t "í"
+rcmd + rshift + ralt + rctrl - o : skhd -t "ó"
+rcmd + rshift + ralt + rctrl - u : skhd -t "ú"
+rcmd + rshift + ralt + rctrl - n : skhd -t "ñ"
+
+rcmd + rshift + ralt + rctrl + lshift - a : skhd -t "Á"
+rcmd + rshift + ralt + rctrl + lshift - e : skhd -t "É"
+rcmd + rshift + ralt + rctrl + lshift - i : skhd -t "Í"
+rcmd + rshift + ralt + rctrl + lshift - o : skhd -t "Ó"
+rcmd + rshift + ralt + rctrl + lshift - u : skhd -t "Ú"
+rcmd + rshift + ralt + rctrl + lshift - n : skhd -t "Ñ"
+
+
+:: normal @: echo "In normal mode"
+alt - space ; normal
+normal < escape ; default
+
+# Hibernation modes
+# normal < ctrl - s : set-sleep
+# normal < ctrl - h : set-hibernate
+normal < ctrl - s : /usr/bin/osascript -e 'do shell script "set-sleep" with administrator privileges'
+normal < ctrl - h : /usr/bin/osascript -e 'do shell script "set-hibernate" with administrator privileges'
+
+
+# Open Apps
+:: open @: echo "In open mode"
+normal < o ; open
+
+# from 'open' mode, activate mode 'default'
+    open < escape ; default
+
+# open MacVim
+    open < v : cd ~/code && omvim; cd -; skhd -k "escape"
+
+# open MacVim for F# development
+    open < f : cd ~/code && fsvim; cd -; skhd -k "escape"
+
+# open Chrome Browser
+    open < c : open -a "/Applications/Google Chrome.app"; skhd -k "escape"
+
+# open Whatsapp
+    open < w : open -a "/Applications/WhatsApp.app"; skhd -k "escape"
+
+# open Slack
+    open < s : open -a "/Applications/Slack.app"; skhd -k "escape"
+
+# open Signal
+    open < i : open -a "/Applications/Signal.app"; skhd -k "escape"
+
+# open Emacs
+    open < e : open -a "/Applications/Emacs.app"; skhd -k "escape"
+
+:: opennew @: echo "In opennew mode"
+    opennew < escape ; default
+    normal < n ; opennew
+
+# opennew new MacVim
+    opennew < v : cd ~/code && omvim; cd -; skhd -k "escape"
+
+# opennew new Chrome Browser
+    opennew < c : open -na "/Applications/Google Chrome.app"; skhd -k "escape"
+
+# open new Emacs
+    opennew < e : open -na "/Applications/Emacs.app"; skhd -k "escape"
+
+# VPN mode
+:: vpn @: echo "In VPN mode"
+    normal < v ; vpn
+    vpn < escape ; default
+    vpn < c : vpnutil start TopManage; skhd -k "escape"
+    vpn < d : vpnutil stop TopManage; skhd -k "escape"
+
+### yabai
+
+# # restart yabai
+# normal < cmd - backspace : launchctl unload  ~/Library/LaunchAgents/org.nixos.yabai.plist && launchctl load  ~/Library/LaunchAgents/org.nixos.yabai.plist
+# #
+# # load yabai scripting additions
+# normal < l : sudo yabai --load-sa
+#
+# ### windows
+#
+# # focus window
+# rcmd + rshift + ralt + rctrl + lshift - h : yabai -m window --focus west
+# rcmd + rshift + ralt + rctrl + lshift - j : yabai -m window --focus south
+# rcmd + rshift + ralt + rctrl + lshift - k : yabai -m window --focus north
+# rcmd + rshift + ralt + rctrl + lshift - l : yabai -m window --focus east
+#
+# # swap window
+# rcmd + rshift + ralt + rctrl + lshift - left  : yabai -m window --swap west
+# rcmd + rshift + ralt + rctrl + lshift - down  : yabai -m window --swap south
+# rcmd + rshift + ralt + rctrl + lshift - up    : yabai -m window --swap north
+# rcmd + rshift + ralt + rctrl + lshift - right : yabai -m window --swap east
+#
+# # move window
+# normal < cmd - left  : yabai -m window --warp west
+# normal < cmd - down  : yabai -m window --warp south
+# normal < cmd - up    : yabai -m window --warp north
+# normal < cmd - right : yabai -m window --warp east
+#
+# # set insertion point in focused container
+# rcmd + rshift + ralt + rctrl + lalt - left  : yabai -m window --insert west
+# rcmd + rshift + ralt + rctrl + lalt - down  : yabai -m window --insert south
+# rcmd + rshift + ralt + rctrl + lalt - up    : yabai -m window --insert north
+# rcmd + rshift + ralt + rctrl + lalt - right : yabai -m window --insert east
+#
+# # increase window size
+# normal < ctrl - left  : yabai -m window --resize left:-20:0
+# normal < ctrl - down  : yabai -m window --resize bottom:0:20
+# normal < ctrl - up    : yabai -m window --resize top:0:-20
+# normal < ctrl - right : yabai -m window --resize right:20:0
+#
+# # decrease window size
+# normal < alt - left  : yabai -m window --resize left:20:0
+# normal < alt - down  : yabai -m window --resize bottom:0:-20
+# normal < alt - up    : yabai -m window --resize top:0:20
+# normal < alt - right : yabai -m window --resize right:-20:0
+#
+# # toggle window border
+# meh - b : yabai -m window --toggle border
+#
+# # toggle window parent zoom
+# normal < p : yabai -m window --toggle zoom-parent
+#
+# # toggle window fullscreen zoom
+# rcmd + rshift + ralt + rctrl - f : yabai -m window --toggle zoom-fullscreen
+#
+# # toggle window native fullscreen
+# # rcmd + rshift + ralt + rctrl + lshift - f : yabai -m window --toggle native-fullscreen
+#
+# # toggle window split type
+# rcmd + rshift + ralt + rctrl - s : yabai -m window --toggle split
+#
+# # toggle sticky (show on all spaces)
+# rcmd + rshift + ralt + rctrl - i : yabai -m window --toggle sticky
+#
+# # toggle topmost (keep above other windows)
+# rcmd + rshift + ralt + rctrl - t : yabai -m window --toggle topmost
+#
+# # toggle sticky, topmost and resize to picture-in-picture size
+# # alt - p : yabai -m window --toggle sticky;\
+# #           yabai -m window --toggle topmost;\
+# #           yabai -m window --grid 5:5:4:0:1:1
+#
+# ### floating windows
+#
+# # float / unfloat window and center on screen
+# rcmd + rshift + ralt + rctrl - u : yabai -m window --toggle float;\
+#             yabai -m window --grid 4:4:1:1:2:2
+#
+# # make floating window fill screen
+# # shift + alt - up     : yabai -m window --grid 1:1:0:0:1:1
+#
+# # make floating window fill left-half of screen
+# # shift + alt - left   : yabai -m window --grid 1:2:0:0:1:1
+#
+# # make floating window fill right-half of screen
+# # shift + alt - right  : yabai -m window --grid 1:2:1:0:1:1
+#
+# # move window
+# # shift + ctrl - a : yabai -m window --move rel:-20:0
+# # shift + ctrl - s : yabai -m window --move rel:0:20
+# # shift + ctrl - w : yabai -m window --move rel:0:-20
+# # shift + ctrl - d : yabai -m window --move rel:20:0
+#
+# ### spaces
+#
+# # create desktop, move window and follow focus - uses jq for parsing json (brew install jq)
+# rcmd + rshift + ralt + rctrl - m : yabai -m space --create && \
+#        index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" | not ))[-1].index')" && \
+#        yabai -m window --space "${index}" && \
+#        yabai -m space --focus "${index}"
+#
+# # create desktop and follow focus - uses jq for parsing json (brew install jq)
+# rcmd + rshift + ralt + rctrl - n : yabai -m space --create && \
+#        index="$(yabai -m query --spaces --display | jq 'map(select(."is-native-fullscreen" | not ))[-1].index')" && \
+#        yabai -m space --focus "${index}"
+#
+# # destroy desktop
+# rcmd + rshift + ralt + rctrl - x : yabai -m space --destroy
+#
+# # fast focus desktop
+# rcmd + rshift + ralt + rctrl - o : yabai -m space --focus recent
+# rcmd + rshift + ralt + rctrl - k : yabai -m space --focus next
+# rcmd + rshift + ralt + rctrl - j : yabai -m space --focus prev
+# rcmd + rshift + ralt + rctrl - 1  : yabai -m space --focus 1
+# rcmd + rshift + ralt + rctrl - 2  : yabai -m space --focus 2
+# rcmd + rshift + ralt + rctrl - 3  : yabai -m space --focus 3
+# rcmd + rshift + ralt + rctrl - 4  : yabai -m space --focus 4
+# rcmd + rshift + ralt + rctrl - 5  : yabai -m space --focus 5
+# rcmd + rshift + ralt + rctrl - 6  : yabai -m space --focus 6
+# rcmd + rshift + ralt + rctrl - 7  : yabai -m space --focus 7
+# rcmd + rshift + ralt + rctrl - 8  : yabai -m space --focus 8
+# rcmd + rshift + ralt + rctrl - 9  : yabai -m space --focus 9
+# rcmd + rshift + ralt + rctrl - 0  : yabai -m space --focus 10
+#
+# # send window to desktop and follow focus
+# meh - o : yabai -m window --space recent; yabai -m space --focus recent
+# meh - k : yabai -m window --space prev; yabai -m space --focus prev
+# meh - j : yabai -m window --space next; yabai -m space --focus next
+# meh - 1 : yabai -m window --space  1; yabai -m space --focus 1
+# meh - 2 : yabai -m window --space  2; yabai -m space --focus 2
+# meh - 3 : yabai -m window --space  3; yabai -m space --focus 3
+# meh - 4 : yabai -m window --space  4; yabai -m space --focus 4
+# meh - 5 : yabai -m window --space  5; yabai -m space --focus 5
+# meh - 6 : yabai -m window --space  6; yabai -m space --focus 6
+# meh - 7 : yabai -m window --space  7; yabai -m space --focus 7
+# meh - 8 : yabai -m window --space  8; yabai -m space --focus 8
+# meh - 9 : yabai -m window --space  9; yabai -m space --focus 9
+#
+# # change layout of desktop
+# meh - return : yabai -m space --layout bsp
+# meh - f : yabai -m space --layout float
+#
+# # balance size of windows
+# rcmd + rshift + ralt + rctrl - b : yabai -m space --balance
+#
+# # rotate tree
+# rcmd + rshift + ralt + rctrl - r : yabai -m space --rotate 90
+#
+# # mirror tree y-axis
+# rcmd + rshift + ralt + rctrl - y : yabai -m space --mirror y-axis
+#
+# # mirror tree x-axis
+# rcmd + rshift + ralt + rctrl - x : yabai -m space --mirror x-axis
+#
+# # toggle desktop offset
+# meh - g : yabai -m space --toggle padding; yabai -m space --toggle gap
+#
+# ### multiple monitors
+#
+# # focus monitor : hyper - arrow
+# rcmd + rshift + ralt + rctrl - tab : yabai -m display --focus recent
+# rcmd + rshift + ralt + rctrl - l : yabai -m display --focus prev
+# rcmd + rshift + ralt + rctrl - h : yabai -m display --focus next
+# rcmd + rshift + ralt + rctrl - down  : yabai -m display --focus 1
+# rcmd + rshift + ralt + rctrl - left  : yabai -m display --focus 2
+# rcmd + rshift + ralt + rctrl - right  : yabai -m display --focus 3
+#
+# # send space to monitor : hyper + lctrl - arrow
+# rcmd + rshift + ralt + rctrl + lctrl - o : yabai -m space --display recent
+# rcmd + rshift + ralt + rctrl + lctrl - h : yabai -m space --display prev
+# rcmd + rshift + ralt + rctrl + lctrl - l : yabai -m space --display next
+# rcmd + rshift + ralt + rctrl + lctrl - down  : yabai -m space --display 1
+# rcmd + rshift + ralt + rctrl + lctrl - left  : yabai -m space --display 2
+# rcmd + rshift + ralt + rctrl + lctrl - right : yabai -m space --display 3
+#
+# # send window to monitor and follow focus
+# meh - o : yabai -m window --display recent; yabai -m display --focus recent
+# meh - h : yabai -m window --display prev; yabai -m display --focus prev
+# meh - l : yabai -m window --display next; yabai -m display --focus next
+# meh - down  : yabai -m window --display 1; yabai -m display --focus 1
+# meh - left  : yabai -m window --display 2; yabai -m display --focus 2
+# meh - right : yabai -m window --display 3; yabai -m display --focus 3
+
+### m1ddc
+
+# # Change monitor display brightness
+# :: brightness @: echo "In brightness mode"
+#     brightness < escape ; default
+#     default < alt - b ; brightness
+#
+#     # + / = (plus/equal)
+#     brightness < 0x18 : for display in {1..2}; do m1ddc display $display chg luminance 20; done
+#     # - / _ (minus)
+#     brightness < 0x18 : for display in {1..2}; do m1ddc display $display chg luminance -20; done
+#
+#     brightness < 0 : for display in {1..2}; do m1ddc display $display set luminance 0; done
+#     brightness < 1 : for display in {1..2}; do m1ddc display $display set luminance 10; done
+#     brightness < 2 : for display in {1..2}; do m1ddc display $display set luminance 20; done
+#     brightness < 3 : for display in {1..2}; do m1ddc display $display set luminance 30; done
+#     brightness < 4 : for display in {1..2}; do m1ddc display $display set luminance 40; done
+#     brightness < 5 : for display in {1..2}; do m1ddc display $display set luminance 50; done
+#     brightness < 6 : for display in {1..2}; do m1ddc display $display set luminance 60; done
+#     brightness < 7 : for display in {1..2}; do m1ddc display $display set luminance 70; done
+#     brightness < 8 : for display in {1..2}; do m1ddc display $display set luminance 80; done
+#     brightness < 9 : for display in {1..2}; do m1ddc display $display set luminance 90; done
+#     brightness < return : for display in {1..2}; do m1ddc display $display set luminance 100; done

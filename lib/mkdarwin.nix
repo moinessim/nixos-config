@@ -1,5 +1,5 @@
 # This function creates a nix-darwin system.
-name: { darwin, nixpkgs, home-manager, system, user, overlays, additionalModules ? [] }:
+name: { darwin, home-manager, system, user, overlays, additionalModules ? [], ... }:
 
 darwin.lib.darwinSystem rec {
   inherit system;
@@ -16,6 +16,7 @@ darwin.lib.darwinSystem rec {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
       home-manager.users.${user} = import ../users/${user}/home-manager.nix;
+      home-manager.backupFileExtension = "backup";
     }
 
     # We expose some extra arguments so that our modules can parameterize

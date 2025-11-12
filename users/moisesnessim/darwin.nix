@@ -8,19 +8,26 @@
   homebrew = {
     enable = true;
     casks  = [
-      "1password"
-      "alfred"
-      "cleanshot"
+      # "1password"
+      # "alfred"
+      # "cleanshot"
       "discord"
       "google-chrome"
-      "hammerspoon"
-      "imageoptim"
-      "istat-menus"
-      "monodraw"
-      "rectangle"
-      "screenflow"
+      # "hammerspoon"
+      # "imageoptim"
+      # "istat-menus"
+      # "monodraw"
+      # "rectangle"
+      # "screenflow"
       "slack"
       "spotify"
+      "dbeaver-community"
+      "maccy"
+      "whatsapp"
+    ];
+    brews = [
+      "libvterm"
+      "m1ddc"
     ];
   };
 

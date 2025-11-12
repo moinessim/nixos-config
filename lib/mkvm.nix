@@ -20,6 +20,10 @@ nixpkgs.lib.nixosSystem rec {
       home-manager.users.${user} = import ../users/${user}/home-manager.nix;
     }
 
+    { programs.command-not-found.enable = false; }
+
+    ./modules/grafana.nix
+
     # We expose some extra arguments so that our modules can parameterize
     # better based on these values.
     {

@@ -1,6 +1,6 @@
 self: super:
 
-let sources = import ../../nix/sources.nix; in rec {
+let sources = import ../../nix/sources.nix; in {
   # My vim config
   customVim = with self; {
 

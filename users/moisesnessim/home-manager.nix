@@ -269,7 +269,6 @@ in {
     pkgs.ripgrep
     pkgs.tree
     pkgs.watch
-    pkgs.vifm-full
     pkgs.qtpass
     pkgs.gawk
     pkgs.unzip
@@ -293,7 +292,23 @@ in {
     # This is automatically setup on Linux
     pkgs.cachix
     pkgs.tailscale
+    pkgs.iterm2
+    pkgs.catimg
+    pkgs.sshfs
+    pkgs.vifm
+    pkgs.xz
+    pkgs.vpnutil
+
+    (pkgs.writeShellScriptBin "mount-emision" ''
+      pgrep -lf sshfs | tee /dev/stderr | awk '{print $1}' | xargs sudo kill -9
+      diskutil unmount force $HOME/emision
+      sshfs moisesnessim@172.16.79.89:/home/moisesnessim $HOME/emision
+      ''
+    )
+
+
   ]) ++ (lib.optionals isLinux [
+    pkgs.vifm-full
     pkgs.chromium
     pkgs.firefox
     pkgs.zathura
@@ -313,17 +328,29 @@ in {
     MANPAGER = "${manpager}/bin/manpager";
   };
 
-  home.file.".gdbinit".source = ./gdbinit;
-  home.file.".inputrc".source = ./inputrc;
 
-  xdg.configFile."i3/config".text = builtins.readFile ./i3;
-  xdg.configFile."devtty/config".text = builtins.readFile ./devtty;
+  home.file = {
+      ".gdbinit".source = ./gdbinit;
+      ".inputrc".source = ./inputrc;
+  } // lib.mkIf isDarwin {
+      # ".skhdrc".source = ./skhdrc;
+  };
 
-  # Rectangle.app. This has to be imported manually using the app.
-  xdg.configFile."rectangle/RectangleConfig.json".text = builtins.readFile ./RectangleConfig.json;
+  xdg.configFile = {
+      "i3/config".text = builtins.readFile ./i3;
+      "devtty/config".text = builtins.readFile ./devtty;
+
+      # Rectangle.app. This has to be imported manually using the app.
+      "rectangle/RectangleConfig.json".text = builtins.readFile ./RectangleConfig.json;
+
+  } // lib.mkIf isDarwin {
+      "vifm/vifmrc".source = ./vifmrc;
+      "karabiner/karabiner.json".source = ./karabiner/karabiner.json;
+      "karabiner/assets/complex_modifications/custom-capslock.json".source = ./karabiner/assets/complex_modifications/custom-capslock.json;
+  };
 
   xdg.mimeApps = {
-    enable = true;
+    enable = isLinux;
     defaultApplications = {
       "text/html" = "org.qutebrowser.qutebrowser.desktop";
       "x-scheme-handler/http" = "org.qutebrowser.qutebrowser.desktop";
@@ -357,7 +384,7 @@ in {
       };
   };
 
-  programs.rofi.pass.enable = true;
+  programs.rofi.pass.enable = isLinux;
 
   programs.bash = {
     enable = true;
@@ -596,7 +623,8 @@ in {
 
   services.gpg-agent = {
     enable = isLinux;
-    pinentryPackage = pkgs.pinentry-gtk2;
+    # deprecated
+    pinentry.package = pkgs.pinentry-gtk2;
 
     # cache the keys forever so we don't get asked for a password
     defaultCacheTtl = 31536000;

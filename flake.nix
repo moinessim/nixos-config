@@ -18,7 +18,7 @@
     };
 
     darwin = {
-      url = "github:LnL7/nix-darwin";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.05";
 
       # We want to use the same set of nixpkgs as our system.
       inputs.nixpkgs.follows = "nixpkgs";
@@ -32,14 +32,15 @@
 
     additionalModules = [
       (import ./modules/registry.nix inputs)
-      ./modules/grafana.nix
-      { programs.command-not-found.enable = false; }
     ];
 
     # Overlays is the list of overlays we want to apply from flake inputs.
     overlays = [
       (final: prev: {
         unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+        inherit (inputs.nixpkgs.legacyPackages.${prev.system}.callPackage ./pkgs/fsautocomplete.nix {})
+        fsautocomplete
+        fsautocomplete-local-or-nix;
       })
     ];
   in {
@@ -52,10 +53,6 @@
         # Example of bringing in an unstable package:
         # open-vm-tools = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.open-vm-tools;
 
-        inherit (
-            inputs.nixpkgs.legacyPackages.${prev.system}
-            .callPackage ./pkgs/fsautocomplete.nix {})
-          fsautocomplete fsautocomplete-local-or-nix;
         nixd = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.nixd;
 
       })];

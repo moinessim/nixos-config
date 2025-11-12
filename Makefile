@@ -19,7 +19,7 @@ UNAME := $(shell uname)
 switch:
 ifeq ($(UNAME), Darwin)
 	nix build ".#darwinConfigurations.${NIXNAME}.system"
-	./result/sw/bin/darwin-rebuild switch --flake "$$(pwd)#${NIXNAME}"
+	sudo ./result/sw/bin/darwin-rebuild switch --flake "$$(pwd)#${NIXNAME}"
 else
 	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake ".#${NIXNAME}"
 endif
@@ -27,9 +27,9 @@ endif
 test:
 ifeq ($(UNAME), Darwin)
 	nix build ".#darwinConfigurations.${NIXNAME}.system"
-	./result/sw/bin/darwin-rebuild test --flake "$$(pwd)#${NIXNAME}"
+	./result/sw/bin/darwin-rebuild check --flake "$$(pwd)#${NIXNAME}"
 else
-	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild test --flake ".#$(NIXNAME)" --show-trace
+	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild check --flake ".#$(NIXNAME)" --show-trace
 endif
 
 # This builds the given NixOS configuration and pushes the results to the
