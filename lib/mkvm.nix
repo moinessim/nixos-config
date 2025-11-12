@@ -22,7 +22,7 @@ nixpkgs.lib.nixosSystem rec {
 
     { programs.command-not-found.enable = false; }
 
-    ./modules/grafana.nix
+    ../modules/grafana.nix
 
     # We expose some extra arguments so that our modules can parameterize
     # better based on these values.
