@@ -334,6 +334,7 @@ in {
       ".inputrc".source = ./inputrc;
   } // lib.mkIf isDarwin {
       # ".skhdrc".source = ./skhdrc;
+      ".aerospace.toml".source = ./aerospace.toml;
   };
 
   xdg.configFile = {

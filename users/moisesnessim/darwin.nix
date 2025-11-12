@@ -8,6 +8,7 @@
   homebrew = {
     enable = true;
     casks  = [
+      "nikitabobko/tap/aerospace"
       # "1password"
       # "alfred"
       # "cleanshot"

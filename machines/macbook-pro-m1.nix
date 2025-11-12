@@ -2,6 +2,8 @@
 
   # Keep in async with vm-shared.nix. (todo: pull this out into a file)
   nix = {
+    # Auto upgrade nix package and the daemon service.
+    package = pkgs.nixVersions.latest;
     # We need to enable flakes
     extraOptions = ''
       experimental-features = nix-command flakes
