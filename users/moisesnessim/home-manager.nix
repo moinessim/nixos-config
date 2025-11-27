@@ -332,19 +332,19 @@ in {
   home.file = {
       ".gdbinit".source = ./gdbinit;
       ".inputrc".source = ./inputrc;
-  } // lib.mkIf isDarwin {
+  } // lib.optionalAttrs isDarwin {
       # ".skhdrc".source = ./skhdrc;
       ".aerospace.toml".source = ./aerospace.toml;
   };
 
   xdg.configFile = {
-      "i3/config".text = builtins.readFile ./i3;
-      "devtty/config".text = builtins.readFile ./devtty;
+      "i3/config".source = ./i3;
+      "devtty/config".source = ./devtty;
 
       # Rectangle.app. This has to be imported manually using the app.
-      "rectangle/RectangleConfig.json".text = builtins.readFile ./RectangleConfig.json;
+      "rectangle/RectangleConfig.json".source = ./RectangleConfig.json;
 
-  } // lib.mkIf isDarwin {
+  } // lib.optionalAttrs isDarwin {
       "vifm/vifmrc".source = ./vifmrc;
       "karabiner/karabiner.json".source = ./karabiner/karabiner.json;
       "karabiner/assets/complex_modifications/custom-capslock.json".source = ./karabiner/assets/complex_modifications/custom-capslock.json;
