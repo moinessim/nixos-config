@@ -275,6 +275,7 @@ in {
     pkgs.zip
     pkgs.mirrord
     pkgs.bruno
+    pkgs.unstable.opencode
 
     jira-cli
     jira-select-project
