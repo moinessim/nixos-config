@@ -25,6 +25,7 @@
       "dbeaver-community"
       "maccy"
       "whatsapp"
+      "finetune"
     ];
     brews = [
       "libvterm"
