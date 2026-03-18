@@ -10,6 +10,8 @@
     # We use the unstable nixpkgs repo for some packages.
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
 
+    openspec.url = "github:Fission-AI/OpenSpec";
+
     home-manager = {
       url = "github:nix-community/home-manager/release-25.05";
 
@@ -41,6 +43,7 @@
         inherit (inputs.nixpkgs.legacyPackages.${prev.system}.callPackage ./pkgs/fsautocomplete.nix {})
         fsautocomplete
         fsautocomplete-local-or-nix;
+        openspec = inputs.openspec.packages.${prev.system}.default;
       })
     ];
   in {
