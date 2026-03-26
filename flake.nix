@@ -46,6 +46,29 @@
         openspec = inputs.openspec.packages.${prev.system}.default;
       })
     ];
+
+    # Helper function to build home-manager packages for a given system
+    mkHomeManagerPackages = system: let
+      pkgs = nixpkgs.legacyPackages.${system};
+      pkgsWithOverlays = pkgs.extend (final: prev: (builtins.head overlays) final prev);
+      hmConfig = import ./users/moisesnessim/home-manager.nix {
+        inherit (pkgsWithOverlays) lib;
+        pkgs = pkgsWithOverlays;
+      };
+      # Convert the list of packages into an attrset for flake outputs
+      packageList = hmConfig.home.packages;
+    in
+      builtins.listToAttrs (map (pkg: {
+        name = pkg.pname or pkg.name or "unknown";
+        value = pkg;
+      }) packageList);
+
+    # Systems we want to expose home-manager packages for
+    systems = [
+      "aarch64-linux"
+      "x86_64-linux"
+      "aarch64-darwin"
+    ];
   in {
     nixosConfigurations.vm-aarch64 = mkVM "vm-aarch64" {
       inherit nixpkgs home-manager additionalModules;
@@ -84,5 +107,11 @@
       system = "aarch64-darwin";
       user   = "moisesnessim";
     };
+
+    # Expose home-manager packages as flake outputs for each system.
+    packages = builtins.listToAttrs (map (system: {
+      name = system;
+      value = mkHomeManagerPackages system;
+    }) systems);
   };
 }
