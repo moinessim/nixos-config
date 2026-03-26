@@ -1,7 +1,7 @@
 {...}:
 {
     services.grafana = {
-      enable = true;
+      enable = false;
       settings = {
         server = {
           # Listening Address
