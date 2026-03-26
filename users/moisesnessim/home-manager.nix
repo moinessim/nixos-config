@@ -277,6 +277,7 @@ in {
     pkgs.bruno
     pkgs.unstable.opencode
     pkgs.openspec
+    pkgs.unstable.opencode-desktop
 
     jira-cli
     jira-select-project
