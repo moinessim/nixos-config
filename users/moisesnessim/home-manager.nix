@@ -267,6 +267,7 @@ in {
     pkgs.jq
     pkgs.yq
     pkgs.ripgrep
+    pkgs.bc # calculator for the terminal
     pkgs.tree
     pkgs.watch
     pkgs.qtpass
