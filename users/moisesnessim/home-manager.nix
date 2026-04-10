@@ -317,6 +317,7 @@ in {
     pkgs.firefox
     pkgs.zathura
     pkgs.autocutsel
+    pkgs.libnotify
   ]);
 
   #---------------------------------------------------------------------
@@ -651,6 +652,8 @@ in {
   services.copyq = {
     enable = isLinux;
   };
+
+  services.dunst.enable = isLinux;
 
   xresources.extraConfig = builtins.readFile ./Xresources;
 
