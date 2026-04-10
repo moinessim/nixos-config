@@ -1,6 +1,9 @@
 { pkgs, ... }:
 
 {
+  # Sound player for opencode-notifier
+  environment.sessionVariables.AUDIO_PLAYER = "${pkgs.mpv}/bin/mpv";
+
   # https://github.com/nix-community/home-manager/pull/2408
   environment.pathsToLink = [ "/share/fish" ];
 

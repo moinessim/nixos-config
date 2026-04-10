@@ -318,6 +318,7 @@ in {
     pkgs.zathura
     pkgs.autocutsel
     pkgs.libnotify
+    pkgs.mpv
   ]);
 
   #---------------------------------------------------------------------
@@ -331,6 +332,7 @@ in {
     EDITOR = "${pkgs.neovim}/bin/nvim --clean";
     PAGER = "less -FirSwX";
     MANPAGER = "${manpager}/bin/manpager";
+    AUDIO_PLAYER = "${pkgs.mpv}/bin/mpv";
   };
 
 
