@@ -45,12 +45,13 @@
         fsautocomplete-local-or-nix;
         openspec = inputs.openspec.packages.${prev.system}.default;
       })
-    ];
+    ]
+    ++ (import ./lib/overlays.nix);
 
     # Helper function to build home-manager packages for a given system
     mkHomeManagerPackages = system: let
       pkgs = nixpkgs.legacyPackages.${system};
-      pkgsWithOverlays = pkgs.extend (final: prev: (builtins.head overlays) final prev);
+      pkgsWithOverlays = pkgs.extend (builtins.foldl' (acc: o: final: prev: acc final prev // o final prev) (final: prev: {}) (overlays ++ [ (import ./users/moisesnessim/vim.nix) ]));
       hmConfig = import ./users/moisesnessim/home-manager.nix {
         inherit (pkgsWithOverlays) lib;
         pkgs = pkgsWithOverlays;
