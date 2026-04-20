@@ -27,92 +27,135 @@
     };
   };
 
-  outputs = { nixpkgs, home-manager, darwin, ... }@inputs: let
+  outputs =
+    {
+      nixpkgs,
+      home-manager,
+      darwin,
+      ...
+    }@inputs:
+    let
 
-    mkDarwin = import ./lib/mkdarwin.nix;
-    mkVM = import ./lib/mkvm.nix;
+      mkDarwin = import ./lib/mkdarwin.nix;
+      mkVM = import ./lib/mkvm.nix;
 
-    additionalModules = [
-      (import ./modules/registry.nix inputs)
-    ];
+      additionalModules = [
+        (import ./modules/registry.nix inputs)
+      ];
 
-    # Overlays is the list of overlays we want to apply from flake inputs.
-    overlays = [
-      (final: prev: {
-        unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
-        inherit (inputs.nixpkgs.legacyPackages.${prev.system}.callPackage ./pkgs/fsautocomplete.nix {})
-        fsautocomplete
-        fsautocomplete-local-or-nix;
-        openspec = inputs.openspec.packages.${prev.system}.default;
-      })
-    ]
-    ++ (import ./lib/overlays.nix);
+      # Overlays is the list of overlays we want to apply from flake inputs.
+      overlays = [
+        (final: prev: {
+          unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+          inherit (inputs.nixpkgs.legacyPackages.${prev.system}.callPackage ./pkgs/fsautocomplete.nix { })
+            fsautocomplete
+            fsautocomplete-local-or-nix
+            ;
+          openspec = inputs.openspec.packages.${prev.system}.default;
+        })
+      ]
+      ++ (import ./lib/overlays.nix);
 
-    # Helper function to build home-manager packages for a given system
-    mkHomeManagerPackages = system: let
-      pkgs = nixpkgs.legacyPackages.${system};
-      pkgsWithOverlays = pkgs.extend (builtins.foldl' (acc: o: final: prev: acc final prev // o final prev) (final: prev: {}) (overlays ++ [ (import ./users/moisesnessim/vim.nix) ]));
-      hmConfig = import ./users/moisesnessim/home-manager.nix {
-        inherit (pkgsWithOverlays) lib;
-        pkgs = pkgsWithOverlays;
-      };
-      # Convert the list of packages into an attrset for flake outputs
-      packageList = hmConfig.home.packages;
+      # Helper function to build home-manager packages for a given system
+      mkHomeManagerPackages =
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          pkgsWithOverlays = pkgs.extend (
+            builtins.foldl' (
+              acc: o: final: prev:
+              acc final prev // o final prev
+            ) (final: prev: { }) (overlays ++ [ (import ./users/moisesnessim/vim.nix) ])
+          );
+          hmConfig = import ./users/moisesnessim/home-manager.nix {
+            inherit (pkgsWithOverlays) lib;
+            pkgs = pkgsWithOverlays;
+          };
+          # Convert the list of packages into an attrset for flake outputs
+          packageList = hmConfig.home.packages;
+        in
+        builtins.listToAttrs (
+          map (pkg: {
+            name = pkg.pname or pkg.name or "unknown";
+            value = pkg;
+          }) packageList
+        );
+
+      # Systems we want to expose home-manager packages for
+      systems = [
+        "aarch64-linux"
+        "x86_64-linux"
+        "aarch64-darwin"
+      ];
     in
-      builtins.listToAttrs (map (pkg: {
-        name = pkg.pname or pkg.name or "unknown";
-        value = pkg;
-      }) packageList);
+    {
+      nixosConfigurations.vm-aarch64 = mkVM "vm-aarch64" {
+        inherit nixpkgs home-manager additionalModules;
+        system = "aarch64-linux";
+        user = "moisesnessim";
 
-    # Systems we want to expose home-manager packages for
-    systems = [
-      "aarch64-linux"
-      "x86_64-linux"
-      "aarch64-darwin"
-    ];
-  in {
-    nixosConfigurations.vm-aarch64 = mkVM "vm-aarch64" {
-      inherit nixpkgs home-manager additionalModules;
-      system = "aarch64-linux";
-      user   = "moisesnessim";
+        overlays = overlays ++ [
+          (final: prev: {
+            # Example of bringing in an unstable package:
+            # open-vm-tools = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.open-vm-tools;
 
-      overlays = overlays ++ [(final: prev: {
-        # Example of bringing in an unstable package:
-        # open-vm-tools = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.open-vm-tools;
+            nixd = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.nixd;
 
-        nixd = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.nixd;
+          })
+        ];
+      };
 
-      })];
+      nixosConfigurations.vm-aarch64-prl = mkVM "vm-aarch64-prl" {
+        inherit
+          overlays
+          nixpkgs
+          home-manager
+          additionalModules
+          ;
+        system = "aarch64-linux";
+        user = "moisesnessim";
+      };
+
+      nixosConfigurations.vm-aarch64-utm = mkVM "vm-aarch64-utm" {
+        inherit
+          overlays
+          nixpkgs
+          home-manager
+          additionalModules
+          ;
+        system = "aarch64-linux";
+        user = "moisesnessim";
+      };
+
+      nixosConfigurations.vm-intel = mkVM "vm-intel" {
+        inherit
+          nixpkgs
+          home-manager
+          overlays
+          additionalModules
+          ;
+        system = "x86_64-linux";
+        user = "moisesnessim";
+      };
+
+      darwinConfigurations.macbook-pro-m1 = mkDarwin "macbook-pro-m1" {
+        inherit
+          darwin
+          nixpkgs
+          home-manager
+          overlays
+          additionalModules
+          ;
+        system = "aarch64-darwin";
+        user = "moisesnessim";
+      };
+
+      # Expose home-manager packages as flake outputs for each system.
+      packages = builtins.listToAttrs (
+        map (system: {
+          name = system;
+          value = mkHomeManagerPackages system;
+        }) systems
+      );
     };
-
-    nixosConfigurations.vm-aarch64-prl = mkVM "vm-aarch64-prl" {
-      inherit overlays nixpkgs home-manager additionalModules;
-      system = "aarch64-linux";
-      user   = "moisesnessim";
-    };
-
-    nixosConfigurations.vm-aarch64-utm = mkVM "vm-aarch64-utm" {
-      inherit overlays nixpkgs home-manager additionalModules;
-      system = "aarch64-linux";
-      user   = "moisesnessim";
-    };
-
-    nixosConfigurations.vm-intel = mkVM "vm-intel" {
-      inherit nixpkgs home-manager overlays additionalModules;
-      system = "x86_64-linux";
-      user   = "moisesnessim";
-    };
-
-    darwinConfigurations.macbook-pro-m1 = mkDarwin "macbook-pro-m1" {
-      inherit darwin nixpkgs home-manager overlays additionalModules;
-      system = "aarch64-darwin";
-      user   = "moisesnessim";
-    };
-
-    # Expose home-manager packages as flake outputs for each system.
-    packages = builtins.listToAttrs (map (system: {
-      name = system;
-      value = mkHomeManagerPackages system;
-    }) systems);
-  };
 }
