@@ -277,6 +277,238 @@ let
     : > "$state_file"
   '';
 
+  ai-preserved-shell = pkgs.writeShellScriptBin "ai-preserved-shell" ''
+    set -euo pipefail
+    exec ${pkgs.coreutils}/bin/env PATH="$PATH" ${pkgs.bashInteractive}/bin/bash --noprofile --norc "$@"
+  '';
+
+  ai-shell = pkgs.writeShellScriptBin "ai-shell" ''
+    set -euo pipefail
+
+    source_config_dir=/home/moisesnessim/code/opencode-config
+    ai_config_dir=/home/ai/.local/share/opencode-config
+
+    if [ -L /home/ai/.config/opencode ]; then
+      target=$(${pkgs.coreutils}/bin/readlink -f /home/ai/.config/opencode || true)
+      if [ "$target" = "/home/moisesnessim/code/opencode-config" ]; then
+        /run/wrappers/bin/sudo -u ai ${pkgs.coreutils}/bin/rm /home/ai/.config/opencode
+        /run/wrappers/bin/sudo -u ai ${pkgs.coreutils}/bin/mkdir -p /home/ai/.config/opencode
+      fi
+    fi
+
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/mkdir -p /home/ai/.local/share
+    /run/wrappers/bin/sudo ${pkgs.rsync}/bin/rsync -a --delete --exclude .git --exclude .worktrees --exclude node_modules "$source_config_dir/" "$ai_config_dir/"
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R ai:ai "$ai_config_dir"
+
+    exec /run/wrappers/bin/sudo \
+      --preserve-env=COLORTERM,DBUS_SESSION_BUS_ADDRESS,DESKTOP_SESSION,DISPLAY,LANG,LC_ALL,LC_CTYPE,PATH,SSH_AUTH_SOCK,TERM,WAYLAND_DISPLAY,XAUTHORITY,XDG_CURRENT_DESKTOP,XDG_RUNTIME_DIR \
+      -H -u ai \
+      ${pkgs.coreutils}/bin/env \
+      PATH="$PATH" \
+      HOME=/home/ai \
+      USER=ai \
+      LOGNAME=ai \
+      SHELL=${ai-preserved-shell}/bin/ai-preserved-shell \
+      XDG_CONFIG_HOME=/home/ai/.config \
+      XDG_CACHE_HOME=/home/ai/.cache \
+      XDG_DATA_HOME=/home/ai/.local/share \
+      BROWSER=${pkgs.xdg-utils}/bin/xdg-open \
+      OPENCODE_CONFIG_DIR=/home/ai/.local/share/opencode-config \
+      ${ai-preserved-shell}/bin/ai-preserved-shell
+  '';
+
+  ai-opencode = pkgs.writeShellScriptBin "ai-opencode" ''
+    set -euo pipefail
+
+    source_config_dir=/home/moisesnessim/code/opencode-config
+    ai_config_dir=/home/ai/.local/share/opencode-config
+
+    if [ -L /home/ai/.config/opencode ]; then
+      target=$(${pkgs.coreutils}/bin/readlink -f /home/ai/.config/opencode || true)
+      if [ "$target" = "/home/moisesnessim/code/opencode-config" ]; then
+        /run/wrappers/bin/sudo -u ai ${pkgs.coreutils}/bin/rm /home/ai/.config/opencode
+        /run/wrappers/bin/sudo -u ai ${pkgs.coreutils}/bin/mkdir -p /home/ai/.config/opencode
+      fi
+    fi
+
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/mkdir -p /home/ai/.local/share
+    /run/wrappers/bin/sudo ${pkgs.rsync}/bin/rsync -a --delete --exclude .git --exclude .worktrees --exclude node_modules "$source_config_dir/" "$ai_config_dir/"
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R ai:ai "$ai_config_dir"
+
+    exec /run/wrappers/bin/sudo \
+      --preserve-env=COLORTERM,DBUS_SESSION_BUS_ADDRESS,DESKTOP_SESSION,DISPLAY,LANG,LC_ALL,LC_CTYPE,PATH,SSH_AUTH_SOCK,TERM,WAYLAND_DISPLAY,XAUTHORITY,XDG_CURRENT_DESKTOP,XDG_RUNTIME_DIR \
+      -H -u ai \
+      ${pkgs.coreutils}/bin/env \
+      PATH="$PATH" \
+      HOME=/home/ai \
+      USER=ai \
+      LOGNAME=ai \
+      SHELL=${ai-preserved-shell}/bin/ai-preserved-shell \
+      XDG_CONFIG_HOME=/home/ai/.config \
+      XDG_CACHE_HOME=/home/ai/.cache \
+      XDG_DATA_HOME=/home/ai/.local/share \
+      BROWSER=${pkgs.xdg-utils}/bin/xdg-open \
+      OPENCODE_CONFIG_DIR=/home/ai/.local/share/opencode-config \
+      ${pkgs.unstable.opencode}/bin/opencode "$@"
+  '';
+
+  ai-mcp-auth = pkgs.writeShellScriptBin "ai-mcp-auth" ''
+    set -euo pipefail
+    exec ${ai-opencode}/bin/ai-opencode mcp auth "$@"
+  '';
+
+  ai-grant = pkgs.writeShellScriptBin "ai-grant" ''
+    set -euo pipefail
+
+    usage() {
+      echo "Usage: ai-grant [--readonly] <directory>" >&2
+      exit 1
+    }
+
+    readonly=false
+
+    while [ $# -gt 0 ]; do
+      case "$1" in
+        --readonly|-r)
+          readonly=true
+          shift
+          ;;
+        --help|-h)
+          usage
+          ;;
+        --)
+          shift
+          break
+          ;;
+        -*)
+          echo "error: unknown option: $1" >&2
+          usage
+          ;;
+        *)
+          break
+          ;;
+      esac
+    done
+
+    [ $# -eq 1 ] || usage
+
+    target=$(${pkgs.coreutils}/bin/realpath "$1")
+    home_dir=$(${pkgs.coreutils}/bin/realpath "$HOME")
+
+    ensure_traverse_acl() {
+      path="$1"
+      while [ "$path" != "/" ] && [ "$path" != "$target" ]; do
+        /run/wrappers/bin/sudo /run/current-system/sw/bin/setfacl -m u:ai:--x "$path"
+        path=$(${pkgs.coreutils}/bin/dirname "$path")
+      done
+    }
+
+    if [ ! -d "$target" ]; then
+      echo "error: directory does not exist: $target" >&2
+      exit 1
+    fi
+
+    case "$target" in
+      /|/home|"$home_dir")
+        echo "error: refusing to grant broad home/system directories" >&2
+        exit 1
+        ;;
+      "$home_dir"/*)
+        ;;
+      *)
+        echo "error: only directories inside $home_dir can be granted" >&2
+        exit 1
+        ;;
+    esac
+
+    ensure_traverse_acl "$(${pkgs.coreutils}/bin/dirname "$target")"
+
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chgrp -R devs "$target"
+
+    if [ "$readonly" = true ]; then
+      /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g+rX "$target"
+      /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g-w "$target"
+      echo "Granted ai read-only access to: $target"
+    else
+      /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g+rwX "$target"
+      /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g+s {} +
+      echo "Granted ai read-write access to: $target"
+    fi
+  '';
+
+  ai-revoke = pkgs.writeShellScriptBin "ai-revoke" ''
+    set -euo pipefail
+
+    usage() {
+      echo "Usage: ai-revoke <directory>" >&2
+      exit 1
+    }
+
+    [ $# -eq 1 ] || usage
+
+    target=$(${pkgs.coreutils}/bin/realpath "$1")
+    home_dir=$(${pkgs.coreutils}/bin/realpath "$HOME")
+    primary_group=$(${pkgs.coreutils}/bin/id -gn)
+
+    if [ ! -d "$target" ]; then
+      echo "error: directory does not exist: $target" >&2
+      exit 1
+    fi
+
+    case "$target" in
+      /|/home|"$home_dir")
+        echo "error: refusing to revoke broad home/system directories" >&2
+        exit 1
+        ;;
+      "$home_dir"/*)
+        ;;
+      *)
+        echo "error: only directories inside $home_dir can be revoked" >&2
+        exit 1
+        ;;
+    esac
+
+    /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g-s {} +
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g-rwX "$target"
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chgrp -R "$primary_group" "$target"
+
+    echo "Revoked ai access to: $target"
+  '';
+
+  ai-reset-traverse-acls = pkgs.writeShellScriptBin "ai-reset-traverse-acls" ''
+    set -euo pipefail
+
+    usage() {
+      echo "Usage: ai-reset-traverse-acls [directory]" >&2
+      exit 1
+    }
+
+    if [ $# -gt 1 ]; then
+      usage
+    fi
+
+    home_dir=$(${pkgs.coreutils}/bin/realpath "$HOME")
+    target=''${1:-$home_dir}
+    target=$(${pkgs.coreutils}/bin/realpath "$target")
+
+    case "$target" in
+      /|/home)
+        echo "error: refusing to touch broad system directories" >&2
+        exit 1
+        ;;
+      "$home_dir"|"$home_dir"/*)
+        ;;
+      *)
+        echo "error: only directories inside $home_dir can be cleaned" >&2
+        exit 1
+        ;;
+    esac
+
+    /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec /run/current-system/sw/bin/setfacl -x u:ai {} + 2>/dev/null || true
+
+    echo "Removed ai traverse ACLs under: $target"
+  '';
+
   shellAliases = {
     gv = "nvim -c ':G | :only' .";
     gf = "git fetch";
@@ -345,6 +577,13 @@ in {
     jira-branch-from-issue
     dpi-toggle
     git-active-branches
+    ai-shell
+    ai-preserved-shell
+    ai-opencode
+    ai-mcp-auth
+    ai-grant
+    ai-revoke
+    ai-reset-traverse-acls
 
     # Node is required for Copilot.vim
     pkgs.nodejs
