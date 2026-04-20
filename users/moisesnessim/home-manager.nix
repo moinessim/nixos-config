@@ -221,6 +221,62 @@ let
 
       '';
 
+  low-memory-notify = pkgs.writeShellScriptBin "low-memory-notify" ''
+    set -eu
+
+    runtime_dir="''${XDG_RUNTIME_DIR:-/run/user/$(${pkgs.coreutils}/bin/id -u)}"
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=$runtime_dir/bus"
+
+    mem_total_kb=$(${pkgs.gawk}/bin/awk '/MemTotal:/ { print $2; exit }' /proc/meminfo)
+    mem_available_kb=$(${pkgs.gawk}/bin/awk '/MemAvailable:/ { print $2; exit }' /proc/meminfo)
+
+    min_threshold_kb=$((1024 * 1024))
+    threshold_kb=$((mem_total_kb / 10))
+    if [ "$threshold_kb" -lt "$min_threshold_kb" ]; then
+      threshold_kb=$min_threshold_kb
+    fi
+
+    state_dir="$runtime_dir/low-memory-notify"
+    state_file="$state_dir/notified"
+    ${pkgs.coreutils}/bin/mkdir -p "$state_dir"
+
+    if [ "$mem_available_kb" -gt "$threshold_kb" ]; then
+      ${pkgs.coreutils}/bin/rm -f "$state_file"
+      exit 0
+    fi
+
+    if [ -f "$state_file" ]; then
+      exit 0
+    fi
+
+    top_process=$(${pkgs.procps}/bin/ps -eo pid=,comm=,rss= --sort=-rss | ${pkgs.gawk}/bin/awk 'NR == 1 { print $1 "\t" $2 "\t" $3; exit }')
+
+    pid=$(printf '%s\n' "$top_process" | ${pkgs.gawk}/bin/awk -F '\t' '{ print $1 }')
+    process_name=$(printf '%s\n' "$top_process" | ${pkgs.gawk}/bin/awk -F '\t' '{ print $2 }')
+    rss_kb=$(printf '%s\n' "$top_process" | ${pkgs.gawk}/bin/awk -F '\t' '{ print $3 }')
+
+    if [ -z "$process_name" ]; then
+      process_name="unknown"
+    fi
+
+    if [ -z "$rss_kb" ]; then
+      rss_kb=0
+    fi
+
+    mem_available_mib=$((mem_available_kb / 1024))
+    threshold_mib=$((threshold_kb / 1024))
+    rss_mib=$((rss_kb / 1024))
+
+    ${pkgs.libnotify}/bin/notify-send \
+      --app-name="System Monitor" \
+      --urgency=critical \
+      --hint=string:x-dunst-stack-tag:low-memory \
+      "Low available memory" \
+      "Available: ''${mem_available_mib} MiB (threshold: ''${threshold_mib} MiB)\nTop memory user: ''${process_name} (PID ''${pid:-?}, ''${rss_mib} MiB RSS)"
+
+    : > "$state_file"
+  '';
+
   shellAliases = {
     gv = "nvim -c ':G | :only' .";
     gf = "git fetch";
@@ -656,6 +712,34 @@ in {
   };
 
   services.dunst.enable = isLinux;
+
+  systemd.user.services.low-memory-notify = lib.mkIf isLinux {
+    Unit = {
+      Description = "Notify when available memory is low";
+      After = [ "graphical-session.target" ];
+    };
+
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${low-memory-notify}/bin/low-memory-notify";
+    };
+  };
+
+  systemd.user.timers.low-memory-notify = lib.mkIf isLinux {
+    Unit = {
+      Description = "Check available memory periodically";
+    };
+
+    Timer = {
+      OnBootSec = "2m";
+      OnUnitActiveSec = "1m";
+      Unit = "low-memory-notify.service";
+    };
+
+    Install = {
+      WantedBy = [ "timers.target" ];
+    };
+  };
 
   xresources.extraConfig = builtins.readFile ./Xresources;
 
