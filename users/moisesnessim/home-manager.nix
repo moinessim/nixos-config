@@ -398,7 +398,18 @@ let
     ensure_traverse_acl() {
       path="$1"
       while [ "$path" != "/" ] && [ "$path" != "$target" ]; do
-        /run/wrappers/bin/sudo /run/current-system/sw/bin/setfacl -m u:ai:--x "$path"
+        case "$path" in
+          "$home_dir"|/home)
+            acl="--x"
+            ;;
+          "$home_dir"/*)
+            acl="r-x"
+            ;;
+          *)
+            acl="--x"
+            ;;
+        esac
+        /run/wrappers/bin/sudo /run/current-system/sw/bin/setfacl -m "u:ai:$acl" "$path"
         path=$(${pkgs.coreutils}/bin/dirname "$path")
       done
     }
@@ -431,7 +442,7 @@ let
       echo "Granted ai read-only access to: $target"
     else
       /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g+rwX "$target"
-      /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g+s {} +
+      /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g+rwX {} +
       echo "Granted ai read-write access to: $target"
     fi
   '';
@@ -468,7 +479,7 @@ let
         ;;
     esac
 
-    /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g-s {} +
+    /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g-rwX {} +
     /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g-rwX "$target"
     /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chgrp -R "$primary_group" "$target"
 
