@@ -394,22 +394,24 @@ let
 
     target=$(${pkgs.coreutils}/bin/realpath "$1")
     home_dir=$(${pkgs.coreutils}/bin/realpath "$HOME")
+    owner_user=$(${pkgs.coreutils}/bin/id -un)
 
-    ensure_traverse_acl() {
+    ensure_traverse_permissions() {
       path="$1"
       while [ "$path" != "/" ] && [ "$path" != "$target" ]; do
         case "$path" in
-          "$home_dir"|/home)
-            acl="--x"
+          /home)
+            /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod g+x "$path"
+            ;;
+          "$home_dir")
+            /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown "$owner_user:devs" "$path"
+            /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod g+x "$path"
             ;;
           "$home_dir"/*)
-            acl="r-x"
-            ;;
-          *)
-            acl="--x"
+            /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown "$owner_user:devs" "$path"
+            /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod g+rx "$path"
             ;;
         esac
-        /run/wrappers/bin/sudo /run/current-system/sw/bin/setfacl -m "u:ai:$acl" "$path"
         path=$(${pkgs.coreutils}/bin/dirname "$path")
       done
     }
@@ -432,9 +434,9 @@ let
         ;;
     esac
 
-    ensure_traverse_acl "$(${pkgs.coreutils}/bin/dirname "$target")"
+    ensure_traverse_permissions "$(${pkgs.coreutils}/bin/dirname "$target")"
 
-    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chgrp -R devs "$target"
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R "$owner_user:devs" "$target"
 
     if [ "$readonly" = true ]; then
       /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g+rX "$target"
@@ -459,6 +461,7 @@ let
 
     target=$(${pkgs.coreutils}/bin/realpath "$1")
     home_dir=$(${pkgs.coreutils}/bin/realpath "$HOME")
+    owner_user=$(${pkgs.coreutils}/bin/id -un)
     primary_group=$(${pkgs.coreutils}/bin/id -gn)
 
     if [ ! -d "$target" ]; then
@@ -481,43 +484,9 @@ let
 
     /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g-rwX {} +
     /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g-rwX "$target"
-    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chgrp -R "$primary_group" "$target"
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R "$owner_user:$primary_group" "$target"
 
     echo "Revoked ai access to: $target"
-  '';
-
-  ai-reset-traverse-acls = pkgs.writeShellScriptBin "ai-reset-traverse-acls" ''
-    set -euo pipefail
-
-    usage() {
-      echo "Usage: ai-reset-traverse-acls [directory]" >&2
-      exit 1
-    }
-
-    if [ $# -gt 1 ]; then
-      usage
-    fi
-
-    home_dir=$(${pkgs.coreutils}/bin/realpath "$HOME")
-    target=''${1:-$home_dir}
-    target=$(${pkgs.coreutils}/bin/realpath "$target")
-
-    case "$target" in
-      /|/home)
-        echo "error: refusing to touch broad system directories" >&2
-        exit 1
-        ;;
-      "$home_dir"|"$home_dir"/*)
-        ;;
-      *)
-        echo "error: only directories inside $home_dir can be cleaned" >&2
-        exit 1
-        ;;
-    esac
-
-    /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec /run/current-system/sw/bin/setfacl -x u:ai {} + 2>/dev/null || true
-
-    echo "Removed ai traverse ACLs under: $target"
   '';
 
   shellAliases = {
@@ -594,10 +563,9 @@ in {
     ai-mcp-auth
     ai-grant
     ai-revoke
-    ai-reset-traverse-acls
 
-    # Node is required for Copilot.vim
-    pkgs.nodejs
+     # Node is required for Copilot.vim
+     pkgs.nodejs
   ] ++ (lib.optionals isDarwin [
     # This is automatically setup on Linux
     pkgs.cachix
