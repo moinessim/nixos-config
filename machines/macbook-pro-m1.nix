@@ -1,5 +1,15 @@
-{  pkgs, ... }: {
+{  pkgs, ... }:
+let
 
+  EnvironmentVariables = {
+    LANG = "en_US.UTF-8";
+    LC_CTYPE = "en_US.UTF-8";
+    LC_ALL = "en_US.UTF-8";
+  };
+
+  KeepAlive = pkgs.lib.mkForce { PathState."/nix/store" = true; };
+
+in {
   # Keep in async with vm-shared.nix. (todo: pull this out into a file)
   nix = {
     # Auto upgrade nix package and the daemon service.
@@ -88,17 +98,15 @@
     dnd_icon           = "";
     clock_format       = ''"%a %b %e  %I:%M %p"'';
   };
-  launchd.user.agents.spacebar.serviceConfig.KeepAlive = pkgs.lib.mkForce { PathState."/nix/store" = true; };
+
+  launchd.user.agents.spacebar.serviceConfig = {
+    inherit KeepAlive EnvironmentVariables;
+  };
 
   services.skhd.enable = true;
   services.skhd.skhdConfig = builtins.readFile ../users/moisesnessim/skhdrc;
   launchd.user.agents.skhd.serviceConfig = {
-    EnvironmentVariables = {
-      LANG = "en_US.UTF-8";
-      LC_CTYPE = "en_US.UTF-8";
-      LC_ALL = "en_US.UTF-8";
-    };
-    KeepAlive = pkgs.lib.mkForce { PathState."/nix/store" = true; };
+    inherit EnvironmentVariables KeepAlive;
     RunAtLoad = true;
   };
 
