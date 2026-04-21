@@ -93,6 +93,11 @@
   services.skhd.enable = true;
   services.skhd.skhdConfig = builtins.readFile ../users/moisesnessim/skhdrc;
   launchd.user.agents.skhd.serviceConfig = {
+    EnvironmentVariables = {
+      LANG = "en_US.UTF-8";
+      LC_CTYPE = "en_US.UTF-8";
+      LC_ALL = "en_US.UTF-8";
+    };
     KeepAlive = pkgs.lib.mkForce { PathState."/nix/store" = true; };
     RunAtLoad = true;
   };
