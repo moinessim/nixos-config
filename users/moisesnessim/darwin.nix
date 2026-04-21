@@ -30,6 +30,10 @@
     brews = [
       "libvterm"
       "m1ddc"
+      {
+        name = "container";
+        start_service = true;
+      }
     ];
   };
 
