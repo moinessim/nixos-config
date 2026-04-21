@@ -286,21 +286,6 @@ let
   ai-shell = pkgs.writeShellScriptBin "ai-shell" ''
     set -euo pipefail
 
-    source_config_dir=/home/moisesnessim/code/opencode-config
-    ai_config_dir=/home/ai/.local/share/opencode-config
-
-    if [ -L /home/ai/.config/opencode ]; then
-      target=$(${pkgs.coreutils}/bin/readlink -f /home/ai/.config/opencode || true)
-      if [ "$target" = "/home/moisesnessim/code/opencode-config" ]; then
-        /run/wrappers/bin/sudo -u ai ${pkgs.coreutils}/bin/rm /home/ai/.config/opencode
-        /run/wrappers/bin/sudo -u ai ${pkgs.coreutils}/bin/mkdir -p /home/ai/.config/opencode
-      fi
-    fi
-
-    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/mkdir -p /home/ai/.local/share
-    /run/wrappers/bin/sudo ${pkgs.rsync}/bin/rsync -a --delete --exclude .git --exclude .worktrees --exclude node_modules "$source_config_dir/" "$ai_config_dir/"
-    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R ai:devs "$ai_config_dir"
-
     exec /run/wrappers/bin/sudo \
       --preserve-env=COLORTERM,DBUS_SESSION_BUS_ADDRESS,DESKTOP_SESSION,DISPLAY,LANG,LC_ALL,LC_CTYPE,PATH,SSH_AUTH_SOCK,TERM,WAYLAND_DISPLAY,XAUTHORITY,XDG_CURRENT_DESKTOP,XDG_RUNTIME_DIR \
       -H -u ai \
@@ -314,28 +299,12 @@ let
       XDG_CACHE_HOME=/home/ai/.cache \
       XDG_DATA_HOME=/home/ai/.local/share \
       BROWSER=${pkgs.xdg-utils}/bin/xdg-open \
-      OPENCODE_CONFIG_DIR=/home/ai/.local/share/opencode-config \
       ${ai-preserved-shell}/bin/ai-preserved-shell
   '';
 
   ai-opencode = pkgs.writeShellScriptBin "ai-opencode" ''
     set -euo pipefail
 
-    source_config_dir=/home/moisesnessim/code/opencode-config
-    ai_config_dir=/home/ai/.local/share/opencode-config
-
-    if [ -L /home/ai/.config/opencode ]; then
-      target=$(${pkgs.coreutils}/bin/readlink -f /home/ai/.config/opencode || true)
-      if [ "$target" = "/home/moisesnessim/code/opencode-config" ]; then
-        /run/wrappers/bin/sudo -u ai ${pkgs.coreutils}/bin/rm /home/ai/.config/opencode
-        /run/wrappers/bin/sudo -u ai ${pkgs.coreutils}/bin/mkdir -p /home/ai/.config/opencode
-      fi
-    fi
-
-    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/mkdir -p /home/ai/.local/share
-    /run/wrappers/bin/sudo ${pkgs.rsync}/bin/rsync -a --delete --exclude .git --exclude .worktrees --exclude node_modules "$source_config_dir/" "$ai_config_dir/"
-    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R ai:devs "$ai_config_dir"
-
     exec /run/wrappers/bin/sudo \
       --preserve-env=COLORTERM,DBUS_SESSION_BUS_ADDRESS,DESKTOP_SESSION,DISPLAY,LANG,LC_ALL,LC_CTYPE,PATH,SSH_AUTH_SOCK,TERM,WAYLAND_DISPLAY,XAUTHORITY,XDG_CURRENT_DESKTOP,XDG_RUNTIME_DIR \
       -H -u ai \
@@ -349,7 +318,6 @@ let
       XDG_CACHE_HOME=/home/ai/.cache \
       XDG_DATA_HOME=/home/ai/.local/share \
       BROWSER=${pkgs.xdg-utils}/bin/xdg-open \
-      OPENCODE_CONFIG_DIR=/home/ai/.local/share/opencode-config \
       ${pkgs.unstable.opencode}/bin/opencode "$@"
   '';
 
