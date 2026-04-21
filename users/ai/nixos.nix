@@ -1,14 +1,11 @@
 { pkgs, ... }:
 
 {
-  users.groups.ai = {};
-
   users.users.ai = {
-    group = "ai";
+    group = "devs";
     isNormalUser = true;
     home = "/home/ai";
     createHome = true;
-    extraGroups = [ "devs" ];
     shell = pkgs.bash;
   };
 

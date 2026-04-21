@@ -279,6 +279,7 @@ let
 
   ai-preserved-shell = pkgs.writeShellScriptBin "ai-preserved-shell" ''
     set -euo pipefail
+    umask 0002
     exec ${pkgs.coreutils}/bin/env PATH="$PATH" ${pkgs.bashInteractive}/bin/bash --noprofile --norc "$@"
   '';
 
@@ -298,7 +299,7 @@ let
 
     /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/mkdir -p /home/ai/.local/share
     /run/wrappers/bin/sudo ${pkgs.rsync}/bin/rsync -a --delete --exclude .git --exclude .worktrees --exclude node_modules "$source_config_dir/" "$ai_config_dir/"
-    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R ai:ai "$ai_config_dir"
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R ai:devs "$ai_config_dir"
 
     exec /run/wrappers/bin/sudo \
       --preserve-env=COLORTERM,DBUS_SESSION_BUS_ADDRESS,DESKTOP_SESSION,DISPLAY,LANG,LC_ALL,LC_CTYPE,PATH,SSH_AUTH_SOCK,TERM,WAYLAND_DISPLAY,XAUTHORITY,XDG_CURRENT_DESKTOP,XDG_RUNTIME_DIR \
@@ -333,7 +334,7 @@ let
 
     /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/mkdir -p /home/ai/.local/share
     /run/wrappers/bin/sudo ${pkgs.rsync}/bin/rsync -a --delete --exclude .git --exclude .worktrees --exclude node_modules "$source_config_dir/" "$ai_config_dir/"
-    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R ai:ai "$ai_config_dir"
+    /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R ai:devs "$ai_config_dir"
 
     exec /run/wrappers/bin/sudo \
       --preserve-env=COLORTERM,DBUS_SESSION_BUS_ADDRESS,DESKTOP_SESSION,DISPLAY,LANG,LC_ALL,LC_CTYPE,PATH,SSH_AUTH_SOCK,TERM,WAYLAND_DISPLAY,XAUTHORITY,XDG_CURRENT_DESKTOP,XDG_RUNTIME_DIR \
@@ -441,10 +442,11 @@ let
     if [ "$readonly" = true ]; then
       /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g+rX "$target"
       /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g-w "$target"
+      /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g+rxs {} +
       echo "Granted ai read-only access to: $target"
     else
       /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g+rwX "$target"
-      /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g+rwX {} +
+      /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g+rws {} +
       echo "Granted ai read-write access to: $target"
     fi
   '';
@@ -482,7 +484,7 @@ let
         ;;
     esac
 
-    /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g-rwX {} +
+    /run/wrappers/bin/sudo ${pkgs.findutils}/bin/find "$target" -type d -exec ${pkgs.coreutils}/bin/chmod g-rwXs {} +
     /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chmod -R g-rwX "$target"
     /run/wrappers/bin/sudo ${pkgs.coreutils}/bin/chown -R "$owner_user:$primary_group" "$target"
 

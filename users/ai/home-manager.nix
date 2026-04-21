@@ -13,5 +13,6 @@
   home.sessionVariables = {
     BROWSER = "${pkgs.xdg-utils}/bin/xdg-open";
     OPENCODE_CONFIG_DIR = "/home/ai/.local/share/opencode-config";
+    UMASK = "0002";
   };
 }
