@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+CONFIG_DIR="${CONFIG_DIR:-$HOME/.config/sketchybar}"
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+export SKETCHYBAR_BIN="${SKETCHYBAR_BIN:-/opt/homebrew/bin/sketchybar}"
+AEROSPACE_BIN="${AEROSPACE_BIN:-/opt/homebrew/bin/aerospace}"
+
+bar=(
+  position=bottom
+  height=32
+  padding_left=8
+  padding_right=8
+  color=0xee111111
+  border_color=0xff3a3a3a
+  border_width=1
+  corner_radius=10
+  y_offset=0
+  blur_radius=18
+  margin=8
+  sticky=on
+)
+
+default=(
+  icon.font="Font Awesome 5 Free:Solid:13.0"
+  label.font="Fira Code:Medium:12.0"
+  icon.color=0xffd0d0d0
+  label.color=0xffe8e8e8
+  icon.padding_left=6
+  icon.padding_right=6
+  label.padding_left=4
+  label.padding_right=8
+  background.height=24
+  background.corner_radius=6
+  background.color=0x00000000
+)
+
+sketchybar --bar "${bar[@]}" --default "${default[@]}"
+
+sketchybar --add event aerospace_workspace_change
+
+workspaces=$("$AEROSPACE_BIN" list-workspaces --all 2>/dev/null)
+
+for sid in $workspaces; do
+  sketchybar --add item "space.$sid" left \
+    --subscribe "space.$sid" aerospace_workspace_change \
+    --set "space.$sid" \
+      icon.drawing=off \
+      label="$sid" \
+      label.padding_left=10 \
+      label.padding_right=10 \
+      click_script="$AEROSPACE_BIN workspace $sid" \
+      script="$PLUGIN_DIR/aerospace.sh $sid space.$sid"
+done
+
+sketchybar \
+  --add item spaces_sep left \
+  --set spaces_sep icon=">" label.drawing=off icon.color=0xff7f8c8d \
+  --add item front_app left \
+  --set front_app icon="APP" icon.color=0xff8bd5ca script="$PLUGIN_DIR/front_app.sh front_app" \
+  --subscribe front_app front_app_switched
+
+sketchybar \
+  --add item wifi right \
+  --set wifi icon="NET" update_freq=5 script="$PLUGIN_DIR/wifi.sh wifi" \
+  --add item cpu right \
+  --set cpu icon="CPU" label="--%" update_freq=2 script="$PLUGIN_DIR/cpu.sh cpu" \
+  --add item mem right \
+  --set mem icon="MEM" label="--%" update_freq=5 script="$PLUGIN_DIR/mem.sh mem" \
+  --add item volume right \
+  --set volume update_freq=0 script="$PLUGIN_DIR/volume.sh volume" \
+  --subscribe volume volume_change \
+  --add item battery right \
+  --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh battery" \
+  --subscribe battery system_woke power_source_change \
+  --add item clock right \
+  --set clock icon="CLK" update_freq=60 script="$PLUGIN_DIR/clock.sh clock"
+
+sketchybar --update

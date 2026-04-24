@@ -69,7 +69,7 @@ in {
     cachix
   ];
 
-  services.spacebar.enable = true;
+  services.spacebar.enable = false;
 
 
   services.spacebar.package = import ../pkgs/spacebar.nix { inherit (pkgs) spacebar fetchFromGitHub; };
@@ -101,6 +101,26 @@ in {
 
   launchd.user.agents.spacebar.serviceConfig = {
     inherit KeepAlive EnvironmentVariables;
+  };
+
+  launchd.user.agents.sketchybar.serviceConfig = {
+    EnvironmentVariables = EnvironmentVariables // {
+      CONFIG_DIR = "/Users/moisesnessim/.config/sketchybar";
+      HOME = "/Users/moisesnessim";
+      PATH = "/opt/homebrew/bin:/opt/homebrew/opt/sketchybar/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+      SKETCHYBAR_BIN = "/opt/homebrew/bin/sketchybar";
+      USER = "moisesnessim";
+      LOGNAME = "moisesnessim";
+    };
+    KeepAlive = true;
+    ProgramArguments = [
+      "/opt/homebrew/opt/sketchybar/bin/sketchybar"
+      "--config"
+      "/Users/moisesnessim/.config/sketchybar/sketchybarrc"
+    ];
+    RunAtLoad = true;
+    StandardErrorPath = "/opt/homebrew/var/log/sketchybar/sketchybar.err.log";
+    StandardOutPath = "/opt/homebrew/var/log/sketchybar/sketchybar.out.log";
   };
 
   services.skhd.enable = true;

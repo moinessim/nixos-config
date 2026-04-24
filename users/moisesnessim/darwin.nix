@@ -8,7 +8,7 @@
   homebrew = {
     enable = true;
     casks  = [
-      "nikitabobko/tap/aerospace"
+      "aerospace"
       # "1password"
       # "alfred"
       # "cleanshot"
@@ -27,12 +27,19 @@
       "whatsapp"
       "finetune"
     ];
+    taps = [
+      "nikitabobko/tap"
+      "FelixKratz/formulae"
+    ];
     brews = [
       "libvterm"
       "m1ddc"
+      "sketchybar"
       {
         name = "container";
-        start_service = true;
+      }
+      {
+        name = "container-compose";
       }
     ];
   };

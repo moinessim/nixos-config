@@ -596,6 +596,42 @@ in {
       "rectangle/RectangleConfig.json".source = ./RectangleConfig.json;
 
   } // lib.optionalAttrs isDarwin {
+      "sketchybar/sketchybarrc" = {
+        source = ./sketchybar/sketchybarrc;
+        executable = true;
+      };
+      "sketchybar/plugins/aerospace.sh" = {
+        source = ./sketchybar/plugins/aerospace.sh;
+        executable = true;
+      };
+      "sketchybar/plugins/battery.sh" = {
+        source = ./sketchybar/plugins/battery.sh;
+        executable = true;
+      };
+      "sketchybar/plugins/clock.sh" = {
+        source = ./sketchybar/plugins/clock.sh;
+        executable = true;
+      };
+      "sketchybar/plugins/cpu.sh" = {
+        source = ./sketchybar/plugins/cpu.sh;
+        executable = true;
+      };
+      "sketchybar/plugins/front_app.sh" = {
+        source = ./sketchybar/plugins/front_app.sh;
+        executable = true;
+      };
+      "sketchybar/plugins/mem.sh" = {
+        source = ./sketchybar/plugins/mem.sh;
+        executable = true;
+      };
+      "sketchybar/plugins/volume.sh" = {
+        source = ./sketchybar/plugins/volume.sh;
+        executable = true;
+      };
+      "sketchybar/plugins/wifi.sh" = {
+        source = ./sketchybar/plugins/wifi.sh;
+        executable = true;
+      };
       "vifm/vifmrc".source = ./vifmrc;
       "karabiner/karabiner.json".source = ./karabiner/karabiner.json;
       "karabiner/assets/complex_modifications/custom-capslock.json".source = ./karabiner/assets/complex_modifications/custom-capslock.json;
