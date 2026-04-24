@@ -130,6 +130,25 @@ in {
     RunAtLoad = true;
   };
 
+  launchd.user.agents.topmanage-vpn.serviceConfig = {
+    EnvironmentVariables = EnvironmentVariables // {
+      HOME = "/Users/moisesnessim";
+      LOGNAME = "moisesnessim";
+      PATH = "/etc/profiles/per-user/moisesnessim/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+      SKETCHYBAR_BIN = "/opt/homebrew/bin/sketchybar";
+      TOPMANAGE_VPN_NAME = "TopManage";
+      USER = "moisesnessim";
+      XDG_STATE_HOME = "/Users/moisesnessim/.local/state";
+    };
+    KeepAlive = true;
+    ProgramArguments = [
+      "/Users/moisesnessim/.config/topmanage-vpn/agent.sh"
+    ];
+    RunAtLoad = true;
+    StandardErrorPath = "/tmp/topmanage-vpn.err.log";
+    StandardOutPath = "/tmp/topmanage-vpn.out.log";
+  };
+
   fonts = {
     # fontDir.enable = true;
     packages = with pkgs; [

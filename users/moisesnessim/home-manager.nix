@@ -277,6 +277,10 @@ let
     : > "$state_file"
   '';
 
+  tm-vpn = pkgs.writeShellScriptBin "tm-vpn" ''
+    exec "$HOME/.config/topmanage-vpn/ctl.sh" "$@"
+  '';
+
   ai-preserved-shell = pkgs.writeShellScriptBin "ai-preserved-shell" ''
     set -euo pipefail
     umask 0002
@@ -533,6 +537,7 @@ in {
     ai-mcp-auth
     ai-grant
     ai-revoke
+    tm-vpn
 
      # Node is required for Copilot.vim
      pkgs.nodejs
@@ -630,6 +635,18 @@ in {
       };
       "sketchybar/plugins/wifi.sh" = {
         source = ./sketchybar/plugins/wifi.sh;
+        executable = true;
+      };
+      "sketchybar/plugins/vpn.sh" = {
+        source = ./sketchybar/plugins/vpn.sh;
+        executable = true;
+      };
+      "topmanage-vpn/agent.sh" = {
+        source = ./topmanage-vpn/agent.sh;
+        executable = true;
+      };
+      "topmanage-vpn/ctl.sh" = {
+        source = ./topmanage-vpn/ctl.sh;
         executable = true;
       };
       "vifm/vifmrc".source = ./vifmrc;

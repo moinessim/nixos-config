@@ -39,6 +39,7 @@ default=(
 sketchybar --bar "${bar[@]}" --default "${default[@]}"
 
 sketchybar --add event aerospace_workspace_change
+sketchybar --add event topmanage_vpn_change
 
 workspaces=$("$AEROSPACE_BIN" list-workspaces --all 2>/dev/null)
 
@@ -64,6 +65,9 @@ sketchybar \
 sketchybar \
   --add item wifi right \
   --set wifi icon="NET" update_freq=5 script="$PLUGIN_DIR/wifi.sh wifi" \
+  --add item vpn right \
+  --set vpn icon="VPN" update_freq=5 script="$PLUGIN_DIR/vpn.sh vpn" click_script="$HOME/.config/topmanage-vpn/ctl.sh toggle" \
+  --subscribe vpn topmanage_vpn_change system_woke \
   --add item cpu right \
   --set cpu icon="CPU" label="--%" update_freq=2 script="$PLUGIN_DIR/cpu.sh cpu" \
   --add item mem right \
