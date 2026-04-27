@@ -9,6 +9,7 @@
     enable = true;
     casks  = [
       "aerospace"
+      "alt-tab"
       # "1password"
       # "alfred"
       # "cleanshot"
