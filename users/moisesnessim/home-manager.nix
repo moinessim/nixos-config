@@ -755,6 +755,7 @@ in {
       push.default = "tracking";
       push.autoSetupRemote = true;
       init.defaultBranch = "master";
+      url."git@bitbucket.org:".insteadOf = "https://bitbucket.org/";
     };
   };
 
