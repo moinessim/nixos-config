@@ -63,8 +63,8 @@ sketchybar \
   --subscribe front_app front_app_switched
 
 sketchybar \
-  --add item wifi right \
-  --set wifi icon="NET" update_freq=5 script="$PLUGIN_DIR/wifi.sh wifi" \
+  --add item clock right \
+  --set clock icon="CLK" update_freq=60 script="$PLUGIN_DIR/clock.sh clock" \
   --add item vpn right \
   --set vpn icon="VPN" update_freq=5 script="$PLUGIN_DIR/vpn.sh vpn" click_script="$HOME/.config/topmanage-vpn/ctl.sh toggle" \
   --subscribe vpn topmanage_vpn_change system_woke \
@@ -78,7 +78,7 @@ sketchybar \
   --add item battery right \
   --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh battery" \
   --subscribe battery system_woke power_source_change \
-  --add item clock right \
-  --set clock icon="CLK" update_freq=60 script="$PLUGIN_DIR/clock.sh clock"
+  --add item wifi right \
+  --set wifi icon="NET" update_freq=5 script="$PLUGIN_DIR/wifi.sh wifi"
 
 sketchybar --update
