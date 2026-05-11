@@ -513,6 +513,7 @@ in {
     pkgs.tree
     pkgs.watch
     pkgs.qtpass
+    pkgs.gnupg
     pkgs.gawk
     pkgs.unzip
     pkgs.zip
