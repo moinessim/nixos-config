@@ -155,6 +155,7 @@ let
       | sed -E 's/[^a-z0-9]+/-/g' | sed 's/^-//; s/-$//')
 
     BRANCH="''${PREFIX}/''${KEY}-''${SLUG}"
+    BRANCH="''${BRANCH:0:128}"
 
     if [ "$DRY_RUN" = true ]; then
       echo "Dry run: would create branch '$BRANCH'" 1>&2
