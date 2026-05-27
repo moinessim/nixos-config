@@ -5,6 +5,12 @@ let
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
 
+  # pass with extensions (DRY)
+  passPackage = pkgs.pass.withExtensions (exts: [
+    exts.pass-otp
+    exts.pass-import
+  ]);
+
   # For our MANPAGER env var
   # https://github.com/sharkdp/bat/issues/1145
   manpager = (pkgs.writeShellScriptBin "manpager" (if isDarwin then ''
@@ -36,6 +42,42 @@ let
       wrapProgram $out/bin/jira --run 'export JIRA_API_TOKEN="$(pass TopManage/jira-cli)"'
       '';
   };
+
+  # Wrapper for qute-pass that includes pass in PATH
+  qute-pass-wrapper = pkgs.writeShellScriptBin "qute-pass-wrapper" ''
+    #!/bin/sh
+    export PATH="${passPackage}/bin:$PATH"
+    if [ "$(uname -s)" = "Darwin" ]; then
+      exec "${pkgs.qutebrowser}/share/qutebrowser/userscripts/qute-pass" \
+        --dmenu-invocation "${qute-pass-dmenu}/bin/qute-pass-dmenu" \
+        "$@"
+    fi
+
+    exec "${pkgs.qutebrowser}/share/qutebrowser/userscripts/qute-pass" "$@"
+  '';
+
+  qute-pass-dmenu = pkgs.writeShellScriptBin "qute-pass-dmenu" ''
+    #!/bin/sh
+    set -eu
+
+    choices_file=$(mktemp)
+    trap 'rm -f "$choices_file"' EXIT
+    cat > "$choices_file"
+
+    /usr/bin/osascript <<'APPLESCRIPT' "$choices_file"
+on run argv
+  set choicesFile to POSIX file (item 1 of argv)
+  set choices to paragraphs of (read choicesFile)
+  set picked to choose from list choices with prompt "Select pass entry" without empty selection allowed
+
+  if picked is false then
+    return ""
+  end if
+
+  return item 1 of picked
+end run
+APPLESCRIPT
+  '';
 
   jira-select-project = pkgs.writeShellScriptBin "jira-select-project"
       ''
@@ -545,10 +587,12 @@ in {
      pkgs.nodejs
   ] ++ (lib.optionals isDarwin [
     # This is automatically setup on Linux
+    pkgs.browserpass
     pkgs.cachix
     pkgs.tailscale
     pkgs.iterm2
     pkgs.catimg
+    pkgs.pinentry_mac
     pkgs.sshfs
     pkgs.vifm
     pkgs.xz
@@ -593,6 +637,17 @@ in {
   } // lib.optionalAttrs isDarwin {
       # ".skhdrc".source = ./skhdrc;
       ".aerospace.toml".source = ./aerospace.toml;
+      "Library/Application Support/Google/Chrome/NativeMessagingHosts/com.github.browserpass.native.json".text = builtins.toJSON {
+        name = "com.github.browserpass.native";
+        description = "Browserpass native component for the Chromium extension";
+        path = "${pkgs.browserpass}/bin/browserpass";
+        type = "stdio";
+        allowed_origins = [
+          "chrome-extension://naepdomgkenhinolocfifgehidddafch/"
+          "chrome-extension://pjmbgaakjkbhpopmakjoedenlfdmcdgm/"
+          "chrome-extension://klfoddkbhleoaabpmiigbmpbjfljimgb/"
+        ];
+      };
   };
 
   xdg.configFile = {
@@ -675,10 +730,7 @@ in {
 
   programs.password-store = {
       enable = true;
-      package = pkgs.pass.withExtensions (exts: [
-          exts.pass-otp
-          exts.pass-import
-      ]);
+      package = passPackage;
       settings.PASSWORD_STORE_KEY = "23AAF91CB405F187";
   };
 
@@ -909,7 +961,9 @@ in {
   programs.qutebrowser = {
       enable = true;
       extraConfig =
-        let args = ''-U secret -u "(?:user|login|username): (.+)"''; in ''
+        let 
+          args = ''-U secret -u "(?:user|login|username): (.+)"'';
+        in ''
         config.set("colors.webpage.darkmode.enabled", True)
         config.set("zoom.default", "100%")
         config.set("editor.command", ["kitty", "nvim", "{file}", "-c", "normal {line}G{column0}l"])
@@ -919,10 +973,11 @@ in {
                    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
                    "accounts.google.com")
 
-        config.bind('<z><l>', 'spawn --userscript qute-pass ${args}')
-        config.bind('<z><u><l>', 'spawn --userscript qute-pass ${args} --username-only')
-        config.bind('<z><p><l>', 'spawn --userscript qute-pass ${args} --password-only')
-        config.bind('<z><o><l>', 'spawn --userscript qute-pass ${args} --otp-only')
+        # Use wrapper for qute-pass that includes pass in PATH
+        config.bind('<z><l>', 'spawn --userscript ${qute-pass-wrapper}/bin/qute-pass-wrapper ${args}')
+        config.bind('<z><u><l>', 'spawn --userscript ${qute-pass-wrapper}/bin/qute-pass-wrapper ${args} --username-only')
+        config.bind('<z><p><l>', 'spawn --userscript ${qute-pass-wrapper}/bin/qute-pass-wrapper ${args} --password-only')
+        config.bind('<z><o><l>', 'spawn --userscript ${qute-pass-wrapper}/bin/qute-pass-wrapper ${args} --otp-only')
 
         config.bind('ca', 'set -t content.javascript.clipboard access ;; cmd-later 10s set -p content.javascript.clipboard none')
 
