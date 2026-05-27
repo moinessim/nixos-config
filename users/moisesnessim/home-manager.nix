@@ -698,6 +698,14 @@ in {
         source = ./sketchybar/plugins/vpn.sh;
         executable = true;
       };
+      "sketchybar/plugins/disk.sh" = {
+        source = ./sketchybar/plugins/disk.sh;
+        executable = true;
+      };
+      "sketchybar/plugins/responsive.sh" = {
+        source = ./sketchybar/plugins/responsive.sh;
+        executable = true;
+      };
       "topmanage-vpn/agent.sh" = {
         source = ./topmanage-vpn/agent.sh;
         executable = true;

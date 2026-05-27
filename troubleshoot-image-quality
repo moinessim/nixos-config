@@ -1,0 +1,27 @@
+- Rebuild & reboot the VM so the changes take effect:
+  - sudo nixos-rebuild switch --flake .#vm-aarch64
+  - sudo reboot
+- After reboot confirm GL is now hardware-accelerated:
+  - nix shell nixpkgs#glxinfo -c glxinfo | egrep 'OpenGL renderer|OpenGL vendor|direct rendering'
+  - Expected: something other than llvmpipe (e.g. a VMware/host renderer) and direct rendering: Yes.
+- If it still reports llvmpipe (software GL), toggle these VMware Fusion host settings and test again:
+  1) Enable “Accelerate 3D graphics” for the VM.
+  2) Increase VM video memory to 128–256 MB if available.
+  3) Toggle “Use full resolution for Retina display” (try both on/off) to see which produces crisper output.
+- If after rebuilding + host tweaks it’s still software rendering, gather these logs and paste them here:
+  - sudo journalctl -b _COMM=Xorg | egrep -i 'vmwgfx|glamor|dri|drm'
+  - nix shell nixpkgs#glxinfo -c glxinfo | sed -n '1,120p'
+  - ls -l /dev/dri; groups $(whoami)
+  - sudo dmesg | egrep -i 'vmw|vmwgfx|drm|glamor' | tail -n 200
+  I’ll diagnose the exact failure (missing DRI driver, permission issue, or host not exposing 3D accel).
+- Files I changed (already committed):
+  - machines/vm-shared.nix — added videoDrivers = [ "vmware" ], enabled hardware.opengl/mesa, ensured vmwgfx is loaded.
+  - modules/vmware-guest.nix — enabled xf86inputvmmouse for better pointer handling.
+- If you want, I can proactively add the X video driver package and DRI packages (xf86 video driver and mesa DRI packages) to the system config in a small non-destructive patch — say “Yes, patch it” and I’ll commit that next.
+
+
+
+
+direct rendering: Yes
+OpenGL vendor string: VMware, Inc.
+OpenGL renderer string: SVGA3D; build: RELEASE;  LLVM;

@@ -68,6 +68,8 @@ sketchybar \
   --add item vpn right \
   --set vpn icon="VPN" update_freq=5 script="$PLUGIN_DIR/vpn.sh vpn" click_script="$HOME/.config/topmanage-vpn/ctl.sh toggle" \
   --subscribe vpn topmanage_vpn_change system_woke \
+  --add item disk right \
+  --set disk icon="DSK" update_freq=60 script="$PLUGIN_DIR/disk.sh disk" \
   --add item cpu right \
   --set cpu icon="CPU" label="--%" update_freq=2 script="$PLUGIN_DIR/cpu.sh cpu" \
   --add item mem right \
@@ -79,6 +81,10 @@ sketchybar \
   --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh battery" \
   --subscribe battery system_woke power_source_change \
   --add item wifi right \
-  --set wifi icon="NET" update_freq=5 script="$PLUGIN_DIR/wifi.sh wifi"
+  --set wifi icon="NET" update_freq=5 script="$PLUGIN_DIR/wifi.sh wifi" \
+  --add item responsive right \
+  --set responsive drawing=off script="$PLUGIN_DIR/responsive.sh" \
+  --subscribe responsive display_change
 
+"$PLUGIN_DIR/responsive.sh"
 sketchybar --update
