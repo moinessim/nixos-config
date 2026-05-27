@@ -57,23 +57,23 @@ done
 
 sketchybar \
   --add item spaces_sep left \
-  --set spaces_sep icon=">" label.drawing=off icon.color=0xff7f8c8d \
+  --set spaces_sep icon="›" label.drawing=off icon.color=0xff7f8c8d \
   --add item front_app left \
-  --set front_app icon="APP" icon.color=0xff8bd5ca script="$PLUGIN_DIR/front_app.sh front_app" \
+  --set front_app icon="🪟" icon.color=0xff8bd5ca script="$PLUGIN_DIR/front_app.sh front_app" \
   --subscribe front_app front_app_switched
 
 sketchybar \
   --add item clock right \
-  --set clock icon="CLK" update_freq=60 script="$PLUGIN_DIR/clock.sh clock" \
+  --set clock icon="🕒" update_freq=60 script="$PLUGIN_DIR/clock.sh clock" \
   --add item vpn right \
-  --set vpn icon="VPN" update_freq=5 script="$PLUGIN_DIR/vpn.sh vpn" click_script="$HOME/.config/topmanage-vpn/ctl.sh toggle" \
+  --set vpn icon="🔐" update_freq=5 script="$PLUGIN_DIR/vpn.sh vpn" click_script="$HOME/.config/topmanage-vpn/ctl.sh toggle" \
   --subscribe vpn topmanage_vpn_change system_woke \
   --add item disk right \
-  --set disk icon="DSK" update_freq=60 script="$PLUGIN_DIR/disk.sh disk" \
+  --set disk icon="💾" update_freq=60 script="$PLUGIN_DIR/disk.sh disk" \
   --add item cpu right \
-  --set cpu icon="CPU" label="--%" update_freq=2 script="$PLUGIN_DIR/cpu.sh cpu" \
+  --set cpu icon="🧠" label="--%" update_freq=2 script="$PLUGIN_DIR/cpu.sh cpu" \
   --add item mem right \
-  --set mem icon="MEM" label="--%" update_freq=5 script="$PLUGIN_DIR/mem.sh mem" \
+  --set mem icon="📊" label="--%" update_freq=5 script="$PLUGIN_DIR/mem.sh mem" \
   --add item volume right \
   --set volume update_freq=0 script="$PLUGIN_DIR/volume.sh volume" \
   --subscribe volume volume_change \
@@ -81,7 +81,7 @@ sketchybar \
   --set battery update_freq=120 script="$PLUGIN_DIR/battery.sh battery" \
   --subscribe battery system_woke power_source_change \
   --add item wifi right \
-  --set wifi icon="NET" update_freq=5 script="$PLUGIN_DIR/wifi.sh wifi" \
+  --set wifi icon="📶" update_freq=5 script="$PLUGIN_DIR/wifi.sh wifi" \
   --add item responsive right \
   --set responsive drawing=off script="$PLUGIN_DIR/responsive.sh" \
   --subscribe responsive display_change

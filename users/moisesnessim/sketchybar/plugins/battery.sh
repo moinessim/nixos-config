@@ -11,17 +11,17 @@ percentage=$(printf '%s\n' "$battery_info" | awk -F';' '/InternalBattery/ {
 }')
 
 if printf '%s\n' "$battery_info" | grep -q 'AC Power'; then
-  icon=AC
+  icon="⚡"
 else
-  icon=BAT
+  icon="🔋"
   if [ -n "$percentage" ] && [ "$percentage" -lt 20 ]; then
-    icon=LOW
+    icon="🪫"
   elif [ -n "$percentage" ] && [ "$percentage" -lt 50 ]; then
-    icon=MID
+    icon="🔋"
   elif [ -n "$percentage" ] && [ "$percentage" -lt 80 ]; then
-    icon=BAT
+    icon="🔋"
   else
-    icon=FULL
+    icon="🔋"
   fi
 fi
 
