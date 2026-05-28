@@ -634,6 +634,14 @@ in {
   home.file = {
       ".gdbinit".source = ./gdbinit;
       ".inputrc".source = ./inputrc;
+      ".local/bin/code-dir-pick" = {
+        source = ./code-dir-pick;
+        executable = true;
+      };
+      ".local/bin/iterm-code-dir-pick" = {
+        source = ./iterm-code-dir-pick;
+        executable = true;
+      };
   } // lib.optionalAttrs isDarwin {
       # ".skhdrc".source = ./skhdrc;
       ".aerospace.toml".source = ./aerospace.toml;

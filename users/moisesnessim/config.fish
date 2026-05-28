@@ -124,6 +124,7 @@ end
 # Vars
 #-------------------------------------------------------------------------------
 # Modify our path to include our Go binaries
+contains $HOME/.local/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/.local/bin
 contains $HOME/code/go/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/code/go/bin
 contains $HOME/bin $fish_user_paths; or set -Ua fish_user_paths $HOME/bin
 
@@ -139,3 +140,11 @@ end
 # `fnix -p go` to get an environment with Go but use the fish shell along
 # with it.
 alias fnix "nix-shell --run fish"
+
+function code_dir_pick -d "Fuzzy-pick a repo or worktree under ~/code"
+    set -l dir (code-dir-pick)
+
+    if test -n "$dir"
+        cd "$dir"
+    end
+end

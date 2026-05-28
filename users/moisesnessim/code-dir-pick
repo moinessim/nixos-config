@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+code_root="${HOME}/code"
+worktrees_root="${code_root}/worktree"
+
+is_git_repo() {
+  git -C "$1" rev-parse --is-inside-work-tree >/dev/null 2>&1
+}
+
+git_branch() {
+  local dir="$1"
+
+  if ! is_git_repo "$dir"; then
+    printf -- "-"
+    return
+  fi
+
+  local branch
+  branch="$(git -C "$dir" branch --show-current 2>/dev/null || true)"
+
+  if [[ -n "$branch" ]]; then
+    printf '%s' "$branch"
+    return
+  fi
+
+  git -C "$dir" rev-parse --short HEAD 2>/dev/null || printf -- "detached"
+}
+
+git_state_emoji() {
+  local dir="$1"
+
+  if ! is_git_repo "$dir"; then
+    printf '➖'
+    return
+  fi
+
+  local status branch_line body line x y
+  local has_conflict=0
+  local has_staged=0
+  local has_unstaged=0
+  local has_untracked=0
+  local has_ahead=0
+  local has_behind=0
+  local emojis=""
+
+  status="$(git -C "$dir" status --short --branch 2>/dev/null || true)"
+  branch_line="${status%%$'\n'*}"
+  body="${status#*$'\n'}"
+
+  if [[ "$branch_line" == *"ahead "* ]]; then
+    has_ahead=1
+  fi
+
+  if [[ "$branch_line" == *"behind "* ]]; then
+    has_behind=1
+  fi
+
+  if [[ "$status" != *$'\n'* ]]; then
+    body=""
+  fi
+
+  while IFS= read -r line; do
+    [[ -z "$line" ]] && continue
+
+    case "$line" in
+      '?? '*)
+        has_untracked=1
+        ;;
+      'AA '*|'DD '*|'UU '*|'AU '*|'UA '*|'DU '*|'UD '*)
+        has_conflict=1
+        ;;
+      *)
+        x="${line:0:1}"
+        y="${line:1:1}"
+
+        if [[ "$x" != ' ' ]]; then
+          has_staged=1
+        fi
+
+        if [[ "$y" != ' ' ]]; then
+          has_unstaged=1
+        fi
+        ;;
+    esac
+  done <<< "$body"
+
+  (( has_conflict )) && emojis+="💥"
+  (( has_staged )) && emojis+="🟢"
+  (( has_unstaged )) && emojis+="📝"
+  (( has_untracked )) && emojis+="❓"
+  (( has_ahead )) && emojis+="⬆️"
+  (( has_behind )) && emojis+="⬇️"
+
+  if [[ -z "$emojis" ]]; then
+    emojis='✅'
+  fi
+
+  printf '%s' "$emojis"
+}
+
+list_dirs() {
+  if [[ -d "$code_root" ]]; then
+    fd --absolute-path --max-depth 1 --min-depth 1 --type d . "$code_root"
+  fi
+
+  if [[ -d "$worktrees_root" ]]; then
+    fd --absolute-path --max-depth 2 --min-depth 2 --type d . "$worktrees_root"
+  fi
+}
+
+pick_dir() {
+  local dir rel branch emojis selected
+
+  while IFS= read -r dir; do
+    [[ "$dir" == "$worktrees_root" ]] && continue
+
+    rel="${dir#"${code_root}/"}"
+    branch="$(git_branch "$dir")"
+    emojis="$(git_state_emoji "$dir")"
+
+    printf '%s\t%s\t%s\t%s\n' "$emojis" "$rel" "$branch" "$dir"
+  done < <(list_dirs | sort -u) |
+    fzf \
+      --delimiter=$'\t' \
+      --with-nth=1,2,3 \
+      --layout=reverse \
+      --height=80% \
+      --prompt='code> ' \
+      --preview='git -C {4} status --short --branch 2>/dev/null || ls -la {4}' \
+      --preview-window='right,60%,wrap' |
+    cut -f4
+}
+
+selected="$(pick_dir || true)"
+
+if [[ -n "$selected" ]]; then
+  printf '%s\n' "$selected"
+fi

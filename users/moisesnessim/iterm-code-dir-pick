@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec /etc/profiles/per-user/moisesnessim/bin/fish -lic 'code_dir_pick; exec /etc/profiles/per-user/moisesnessim/bin/fish -li'
