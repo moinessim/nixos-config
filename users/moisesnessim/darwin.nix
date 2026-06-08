@@ -1,9 +1,18 @@
-{ pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   nixpkgs.overlays = import ../../lib/overlays.nix ++ [
     (import ./vim.nix)
   ];
+
+  system.activationScripts.preActivation.text = lib.mkAfter ''
+    if [ -x "${config.homebrew.brewPrefix}/brew" ]; then
+      for tap in nikitabobko/tap FelixKratz/formulae; do
+        sudo --user=moisesnessim --set-home \
+          "${config.homebrew.brewPrefix}/brew" trust --tap "$tap"
+      done
+    fi
+  '';
 
   homebrew = {
     enable = true;
@@ -35,6 +44,7 @@
     brews = [
       "libvterm"
       "m1ddc"
+      "cloudflared"
       "sketchybar"
       {
         name = "container";
