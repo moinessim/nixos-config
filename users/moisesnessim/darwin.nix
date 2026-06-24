@@ -18,13 +18,13 @@
     enable = true;
     casks  = [
       "aerospace"
-      "alt-tab"
+      # "alt-tab" # not free
       # "1password"
       # "alfred"
       # "cleanshot"
-      "discord"
+      # "discord"
       "google-chrome"
-      # "hammerspoon"
+      "hammerspoon"
       # "imageoptim"
       # "istat-menus"
       # "monodraw"
