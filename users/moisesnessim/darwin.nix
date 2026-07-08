@@ -31,6 +31,7 @@
       # "rectangle"
       # "screenflow"
       "slack"
+      "microsoft-teams"
       "spotify"
       "dbeaver-community"
       "maccy"
