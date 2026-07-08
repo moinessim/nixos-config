@@ -41,19 +41,44 @@ sketchybar --bar "${bar[@]}" --default "${default[@]}"
 sketchybar --add event aerospace_workspace_change
 sketchybar --add event topmanage_vpn_change
 
-workspaces=$("$AEROSPACE_BIN" list-workspaces --all 2>/dev/null)
+# Build mapping: aerospace monitor-id → NSScreen display ID (for sketchybar display property)
+declare -A MONITOR_DISPLAY
+MONITOR_IDS=()
+while IFS=" " read -r aero_id display_id; do
+  MONITOR_IDS+=("$aero_id")
+  MONITOR_DISPLAY["$aero_id"]="$display_id"
+done < <("$AEROSPACE_BIN" list-monitors --format '%{monitor-id} %{monitor-appkit-nsscreen-screens-id}' 2>/dev/null)
 
-for sid in $workspaces; do
-  sketchybar --add item "space.$sid" left \
-    --subscribe "space.$sid" aerospace_workspace_change \
-    --set "space.$sid" \
-      icon.drawing=off \
-      label="$sid" \
-      label.padding_left=10 \
-      label.padding_right=10 \
-      click_script="$AEROSPACE_BIN workspace $sid" \
-      script="$PLUGIN_DIR/aerospace.sh $sid space.$sid"
-done
+if [ ${#MONITOR_IDS[@]} -gt 0 ]; then
+  # Multi-monitor: assign each workspace to its monitor's display
+  for monitor_id in "${MONITOR_IDS[@]}"; do
+    for sid in $("$AEROSPACE_BIN" list-workspaces --monitor "$monitor_id" 2>/dev/null); do
+      sketchybar --add item "space.$sid" left \
+        --subscribe "space.$sid" aerospace_workspace_change \
+        --set "space.$sid" \
+          icon.drawing=off \
+          label="$sid" \
+          label.padding_left=10 \
+          label.padding_right=10 \
+          display="${MONITOR_DISPLAY[$monitor_id]}" \
+          click_script="$AEROSPACE_BIN workspace $sid" \
+          script="$PLUGIN_DIR/aerospace.sh $sid space.$sid"
+    done
+  done
+else
+  # Single-monitor fallback (old behavior)
+  for sid in $("$AEROSPACE_BIN" list-workspaces --all 2>/dev/null); do
+    sketchybar --add item "space.$sid" left \
+      --subscribe "space.$sid" aerospace_workspace_change \
+      --set "space.$sid" \
+        icon.drawing=off \
+        label="$sid" \
+        label.padding_left=10 \
+        label.padding_right=10 \
+        click_script="$AEROSPACE_BIN workspace $sid" \
+        script="$PLUGIN_DIR/aerospace.sh $sid space.$sid"
+  done
+fi
 
 sketchybar \
   --add item spaces_sep left \

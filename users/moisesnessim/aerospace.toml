@@ -260,7 +260,10 @@ automatically-unhide-macos-hidden-apps = false
 
     alt-m = 'focus-monitor --wrap-around next'
     # See: https://nikitabobko.github.io/AeroSpace/commands#move-workspace-to-monitor
-    alt-shift-m = 'move-workspace-to-monitor --wrap-around next'
+    alt-shift-m = [
+      'move-workspace-to-monitor --wrap-around next',
+      'exec-and-forget sketchybar --trigger aerospace_workspace_change',
+    ]
 
 
 alt-r = 'mode resize'
