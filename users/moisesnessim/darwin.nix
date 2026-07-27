@@ -36,6 +36,7 @@
       "dbeaver-community"
       "maccy"
       "whatsapp"
+      "keet"
       "finetune"
     ];
     taps = [

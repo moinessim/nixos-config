@@ -977,7 +977,7 @@ in {
   programs.qutebrowser = {
       enable = true;
       extraConfig =
-        let 
+        let
           args = ''-U secret -u "(?:user|login|username): (.+)"'';
         in ''
         config.set("colors.webpage.darkmode.enabled", True)
