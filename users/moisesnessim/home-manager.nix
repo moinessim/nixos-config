@@ -986,7 +986,7 @@ in {
 
         # https://github.com/qutebrowser/qutebrowser/issues/7427
         config.set("content.headers.user_agent",
-                   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36",
+                   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36",
                    "accounts.google.com")
 
         # Use wrapper for qute-pass that includes pass in PATH
