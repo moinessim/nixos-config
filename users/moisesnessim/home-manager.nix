@@ -659,6 +659,7 @@ in {
   };
 
   xdg.configFile = {
+      "vifm/vifmrc".source = ./vifmrc;
       "i3/config".source = ./i3;
       "devtty/config".source = ./devtty;
 
@@ -722,7 +723,6 @@ in {
         source = ./topmanage-vpn/ctl.sh;
         executable = true;
       };
-      "vifm/vifmrc".source = ./vifmrc;
       "karabiner/karabiner.json".source = ./karabiner/karabiner.json;
       "karabiner/assets/complex_modifications/custom-capslock.json".source = ./karabiner/assets/complex_modifications/custom-capslock.json;
   };
