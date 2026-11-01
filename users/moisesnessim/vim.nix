@@ -58,6 +58,7 @@ let sources = import ../../nix/sources.nix; in {
         vimPlugins.lspkind-nvim
         vimPlugins.nvim-cmp
         vimPlugins.nvim-treesitter.withAllGrammars
+        nvim-treesitter-textobjects
         comment-nvim
       ]
       ++ vimPlugins.nvim-dap-ui.dependencies

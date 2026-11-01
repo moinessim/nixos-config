@@ -6,10 +6,10 @@
   ];
 
   system.activationScripts.preActivation.text = lib.mkAfter ''
-    if [ -x "${config.homebrew.brewPrefix}/brew" ]; then
+    if [ -x "${config.homebrew.prefix}/bin/brew" ]; then
       for tap in nikitabobko/tap FelixKratz/formulae; do
         sudo --user=moisesnessim --set-home \
-          "${config.homebrew.brewPrefix}/brew" trust --tap "$tap"
+          "${config.homebrew.prefix}/bin/brew" trust --tap "$tap"
       done
     fi
   '';

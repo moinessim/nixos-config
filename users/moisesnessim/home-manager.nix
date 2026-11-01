@@ -806,17 +806,14 @@ in {
 
   programs.git = {
     enable = true;
-    userName = "Moises Nessim";
-    userEmail = "moises.nessim@topmanage.com";
-    aliases = {
-      cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 -r git branch -d";
-      prettylog = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(r) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
-      root = "rev-parse --show-toplevel";
-    };
-    hooks = {
-        prepare-commit-msg = ./prepare-commit-msg;
-    };
-    extraConfig = {
+    settings = {
+      user.name = "Moises Nessim";
+      user.email = "moises.nessim@topmanage.com";
+      alias = {
+        cleanup = "!git branch --merged | grep  -v '\\*\\|master\\|develop\\|main' | xargs -n 1 -r git branch -d";
+        prettylog = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(r) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
+        root = "rev-parse --show-toplevel";
+      };
       branch.autosetuprebase = "always";
       color.ui = true;
       core.askPass = ""; # needs to be empty to use terminal for ask pass
@@ -826,6 +823,9 @@ in {
       push.autoSetupRemote = true;
       init.defaultBranch = "master";
       url."git@bitbucket.org:".insteadOf = "https://bitbucket.org/";
+    };
+    hooks = {
+        prepare-commit-msg = ./prepare-commit-msg;
     };
   };
 
@@ -901,6 +901,7 @@ in {
     enable = true;
 
     withPython3 = true;
+    withRuby = false;
     extraPython3Packages = (p: with p; [
       # For nvim-magma
       jupyter-client
@@ -964,7 +965,7 @@ in {
       vimPlugins.vim-markdown
       vimPlugins.markdown-preview-nvim
       vimPlugins.vim-nix
-      vimPlugins.typescript-vim
+      # vimPlugins.typescript-vim
       vimPlugins.plantuml-syntax
 
       customVim.vim-misc

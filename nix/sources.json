@@ -156,15 +156,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nvim-treesitter-textobjects": {
-        "branch": "master",
+        "branch": "main",
         "description": null,
         "homepage": "",
         "owner": "nvim-treesitter",
         "repo": "nvim-treesitter-textobjects",
-        "rev": "698b5f805722254bca3c509591c1806d268b6c2f",
-        "sha256": "0lxikjxgfjbr28xf00p7rphbfp4fwrxj0yma9cin0i74ah5gxam3",
+        "rev": "5c7b0263797dfd1bd6202f2b219f3b53a80b2187",
+        "sha256": "sha256-cD4JuAscbRrA0I6cPK7OlQef2vK6aiG+Yl7SPqR7MNg=",
         "type": "tarball",
-        "url": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects/archive/698b5f805722254bca3c509591c1806d268b6c2f.tar.gz",
+        "url": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects/archive/5c7b0263797dfd1bd6202f2b219f3b53a80b2187.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "pack": {
@@ -329,10 +329,10 @@
         "homepage": null,
         "owner": "moinessim",
         "repo": "vim-misc",
-        "rev": "249b23b094e0caf75ffe62ea1f2d2131a0782897",
-        "sha256": "02rh0yb7050w0sjrsrgrl84sy7larn29hgwhg9hcn0pjfw18sffh",
+        "rev": "0818a67",
+        "sha256": "sha256-KXcaYwF9xlQPi8CpszIE+rCWJsyL2OWNIkNGX2HuAk4=",
         "type": "tarball",
-        "url": "https://github.com/moinessim/vim-misc/archive/249b23b094e0caf75ffe62ea1f2d2131a0782897.tar.gz",
+        "url": "https://github.com/moinessim/vim-misc/archive/0818a67.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "vim-nord": {
