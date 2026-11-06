@@ -83,7 +83,7 @@ let
   mkPkgs = sources: system:
     let
       sourcesNixpkgs =
-        import (builtins_fetchTarball { inherit (sources.nixpkgs) url sha256; }) { inherit system; };
+        import (builtins_fetchTarball { inherit (sources.nixpkgs) url sha256; }) { localSystem = system; };
       hasNixpkgsPath = builtins.any (x: x.prefix == "nixpkgs") builtins.nixPath;
       hasThisAsNixpkgsPath = <nixpkgs> == ./.;
     in

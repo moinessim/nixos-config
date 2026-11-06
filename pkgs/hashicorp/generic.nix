@@ -4,7 +4,6 @@
 { name
 , version
 , sha256
-, system ? builtins.currentSystem
 , pname ? "${name}-bin"
 
 , lib
@@ -25,7 +24,9 @@ let
   };
 
   # Get our system
-  goSystem = systemMap.${system} or (throw "unsupported system: ${system}");
+  goSystem =
+    systemMap.${stdenv.hostPlatform.system}
+      or (throw "unsupported system: ${stdenv.hostPlatform.system}");
 
   # url for downloading composed of all the other stuff we built up.
   url = "https://releases.hashicorp.com/${name}/${version}/${name}_${version}_${goSystem}.zip";

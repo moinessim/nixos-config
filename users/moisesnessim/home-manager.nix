@@ -585,7 +585,10 @@ in {
 
      # Node is required for Copilot.vim
      pkgs.nodejs
-  ] ++ (lib.optionals isDarwin [
+     # External tools used by Neovim integrations
+     pkgs.tree-sitter
+     pkgs.rust-analyzer
+   ] ++ (lib.optionals isDarwin [
     # This is automatically setup on Linux
     pkgs.browserpass
     pkgs.cachix
@@ -902,15 +905,6 @@ in {
 
     withPython3 = true;
     withRuby = false;
-    extraPython3Packages = (p: with p; [
-      # For nvim-magma
-      jupyter-client
-      cairosvg
-      plotly
-      #pnglatex
-      #kaleido
-    ]);
-
     plugins = with pkgs; [
       vimPlugins.which-key-nvim
       customVim.vim-copilot
@@ -936,7 +930,6 @@ in {
       vimPlugins.nvim-treesitter.withAllGrammars
 
 
-      customVim.nvim-magma
       customVim.vifm-vim
       # customVim.toggleterm
       vimPlugins.toggleterm-nvim

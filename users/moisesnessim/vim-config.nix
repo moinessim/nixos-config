@@ -22,6 +22,24 @@ if filereadable(vim_misc_path)
   execute "source " . vim_misc_path
 endif
 
+" This works with current Home Manager versions
+let vim_misc_path = split(&packpath, ",")[0] . "/pack/hm/start/vimplugin-vim-misc/vimrc.vim"
+if filereadable(vim_misc_path)
+  execute "source " . vim_misc_path
+endif
+
+" Resolve the plugin location from runtimepath (Home Manager may use any pack name)
+let vim_misc_path = findfile("vimrc.vim", &runtimepath)
+if filereadable(vim_misc_path)
+  execute "source " . vim_misc_path
+endif
+
+" Home Manager adds package paths after init.vim; retry once they are loaded.
+augroup vim_misc_config
+  autocmd!
+  autocmd VimEnter * let vim_misc_path = findfile("vimrc.vim", &runtimepath) | if filereadable(vim_misc_path) | execute "source " . vim_misc_path | endif
+augroup END
+
 lua <<EOF
 ---------------------------------------------------------------------
 
@@ -31,10 +49,12 @@ require'nvim-surround'.setup()
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-local lspconfig = require'lspconfig'
+local function root_from_markers(filename, markers)
+  return vim.fs.root(filename, markers)
+end
 
 -- Configure F# LSP
-lspconfig.fsautocomplete.setup {
+vim.lsp.config('fsautocomplete', {
     cmd = { "${pkgs.fsautocomplete-local-or-nix}/bin/fsautocomplete", "--adaptive-lsp-server-enabled" },
     capabilities = capabilities,
     settings = {
@@ -64,17 +84,17 @@ lspconfig.fsautocomplete.setup {
         -- * git repository root
         -- * directory containing an fsproj file
         -- * directory with fsx scripts
-        root = lspconfig.util.root_pattern("*.sln")(filename)
-        root = root or lspconfig.util.find_git_ancestor(filename)
-        root = root or lspconfig.util.root_pattern("*.fsproj")(filename)
-        root = root or lspconfig.util.root_pattern("*.fsx")(filename)
+        root = root_from_markers(filename, "*.sln")
+        root = root or root_from_markers(filename, ".git")
+        root = root or root_from_markers(filename, "*.fsproj")
+        root = root or root_from_markers(filename, "*.fsx")
         return root
       end,
-}
+})
 
 -- Configure C# LSP
 local pid = vim.fn.getpid()
-lspconfig.omnisharp.setup{
+vim.lsp.config('omnisharp', {
     cmd = { '${pkgs.omnisharp-roslyn}/bin/OmniSharp', "--languageserver" , "--hostPID", tostring(pid) },
     capabilities = capabilities,
     -- disable semantic tokens provider
@@ -82,29 +102,29 @@ lspconfig.omnisharp.setup{
         client.server_capabilities.semanticTokensProvider = nil
         require'omnisharp'.on_attach(client, bufnr)
     end,
-}
+})
 
 
 -- Configure Nix LSP
-lspconfig.nixd.setup{
+vim.lsp.config('nixd', {
     cmd = { "${pkgs.nixd}/bin/nixd" },
     capabilities = capabilities,
-}
+})
 
-lspconfig.java_language_server.setup{
+vim.lsp.config('java_language_server', {
     cmd = { "${pkgs.callPackage (sources.nixpkgs + /pkgs/by-name/jd/jdt-language-server/package.nix) {}}/bin/jdtls" },
     capabilities = capabilities,
-}
+})
 
 -- Configure Yaml LSP
-lspconfig.yamlls.setup {
+vim.lsp.config('yamlls', {
     cmd = { "${pkgs.yaml-language-server}/bin/yaml-language-server", "--stdio" },
     settings = { yaml = { keyOrdering = false } },
     capabilities = capabilities,
-}
+})
 
 -- Configure Lua LSP
-lspconfig.lua_ls.setup {
+vim.lsp.config('lua_ls', {
   cmd = { "${pkgs.lua-language-server}/bin/lua-language-server" },
   on_init = function(client)
     local path = client.workspace_folders[1].name
@@ -141,10 +161,20 @@ lspconfig.lua_ls.setup {
     end
     return true
   end
-}
+})
 
 -- Configure Rust LSP
-lspconfig.rust_analyzer.setup {}
+vim.lsp.config('rust_analyzer', {})
+
+vim.lsp.enable({
+  'fsautocomplete',
+  'omnisharp',
+  'nixd',
+  'java_language_server',
+  'yamlls',
+  'lua_ls',
+  'rust_analyzer',
+})
 
 -- Debugging
 
