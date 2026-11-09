@@ -8,8 +8,7 @@ let
   # pass with extensions (DRY)
   passPackage = pkgs.pass.withExtensions (exts: [
     exts.pass-otp
-    exts.pass-import
-  ]);
+  ] ++ lib.optional isLinux exts.pass-import);
 
   # For our MANPAGER env var
   # https://github.com/sharkdp/bat/issues/1145
