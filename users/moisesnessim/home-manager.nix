@@ -968,8 +968,8 @@ in {
   };
 
   programs.qutebrowser = {
-      enable = true;
-      extraConfig =
+      enable = !isDarwin;
+      extraConfig = lib.optionalString (!isDarwin) (
         let
           args = ''-U secret -u "(?:user|login|username): (.+)"'';
         in ''
@@ -990,7 +990,8 @@ in {
 
         config.bind('ca', 'set -t content.javascript.clipboard access ;; cmd-later 10s set -p content.javascript.clipboard none')
 
-      '';
+      ''
+      );
   };
 
   services.gpg-agent = {
