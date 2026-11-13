@@ -1,5 +1,7 @@
 { pkgs, ... }:
-
+let
+  isLinux = pkgs.stdenv.isLinux;
+in
 {
   home.stateVersion = "25.05";
 
@@ -29,5 +31,21 @@
     hooks = {
         prepare-commit-msg = ../moisesnessim/prepare-commit-msg;
     };
+  };
+
+  programs.gpg.enable = isLinux;
+
+  services.gpg-agent = {
+    enable = isLinux;
+    pinentry.package = pkgs.pinentry-curses;
+
+    # cache the keys forever so we don't get asked for a password
+    defaultCacheTtl = 31536000;
+    maxCacheTtl = 31536000;
+  };
+
+  programs.password-store = {
+      enable = true;
+      settings.PASSWORD_STORE_KEY = "2EBCF963B879619F";
   };
 }
