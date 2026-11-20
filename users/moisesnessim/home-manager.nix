@@ -956,6 +956,7 @@ in {
 
       vimPlugins.vim-markdown
       vimPlugins.markdown-preview-nvim
+      vimPlugins.vim-helm
       vimPlugins.vim-nix
       # vimPlugins.typescript-vim
       vimPlugins.plantuml-syntax

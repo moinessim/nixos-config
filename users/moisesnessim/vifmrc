@@ -135,6 +135,12 @@ filetype *.tudu tudu -f %c
 filextype *.pro qtcreator %f &
 filextype */ thunar %f &
 
+" Colored fallback for text files, including hidden files.
+if executable('bat')
+    fileviewer *.tpl bat --color=always --style=plain --paging=never --language=yaml %c
+    fileviewer *.* bat --color=always --style=plain --paging=never %c
+endif
+
 " macOS-specific associations, enabled only when the command exists.
 if executable('open')
     filetype {*.p12,*.pfx,*.pem,*.cer} open -a Preview.app
